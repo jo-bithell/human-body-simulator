@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Mouth": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

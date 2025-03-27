@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Heart": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SmallIntestine": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
