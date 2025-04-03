@@ -19,7 +19,7 @@ namespace SharedLogic
         {
             while (_bloodCacheCache.Queue.TryDequeue(out var blood))
             {
-                await _producerService.SendMessage(blood);
+                _producerService.SendMessage(blood);
             }
             await Task.CompletedTask;
         }

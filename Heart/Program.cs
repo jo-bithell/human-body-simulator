@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedLogic.Models.Cells;
 using Lungs;
+using Quartz;
 
 namespace Heart
 {
@@ -12,7 +13,6 @@ namespace Heart
         private static int _numberOfCells = 100;
         static async Task Main(string[] args)
         {
-            await WorkerScheduler.ScheduleJobs();
             var deoxygenatedHostTask = CreateRightAtriumHostBuilder(args).Build().RunAsync();
             var oxygenatedHostTask = CreateLeftAtriumHostBuilder(args).Build().RunAsync();
 
@@ -42,6 +42,17 @@ namespace Heart
                 {
                     return new MessagePublisher<Blood>("lungs");
                 });
+                services.AddScoped<HeartBloodProducerWorker>();
+                services.AddQuartz(q =>
+                {
+                    q.ScheduleJob<WorkerScheduler>(trigger => trigger
+                    .StartNow()
+                    .WithSimpleSchedule(x => x
+                        .WithIntervalInSeconds(5)
+                        .RepeatForever()));
+                });
+                services.AddQuartzHostedService();
+
             });
 
         public static IHostBuilder CreateLeftAtriumHostBuilder(string[] args) =>

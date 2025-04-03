@@ -2,7 +2,6 @@
 using Quartz;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
-using SharedLogic.Workers;
 
 namespace Heart
 {
@@ -31,7 +30,7 @@ namespace Heart
                 while(_bloodCache.Queue.TryDequeue(out var blood))
                 {
                     if (blood is not null)
-                        await _producerService.SendMessage(blood);
+                        _producerService.SendMessage(blood);
                 }
             }
 

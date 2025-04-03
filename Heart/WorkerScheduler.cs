@@ -6,13 +6,12 @@ using Heart;
 
 namespace Lungs
 {
-    internal static class WorkerScheduler
+    internal class WorkerScheduler: IJob
     {
-        public static async Task ScheduleJobs()
+        public async Task Execute(IJobExecutionContext context)
         {
             StdSchedulerFactory factory = new StdSchedulerFactory();
             IScheduler scheduler = await factory.GetScheduler();
-            await scheduler.Start();
 
             IJobDetail heartBloodProducerWorker = JobBuilder.Create<HeartBloodProducerWorker>()
                 .Build();
@@ -23,17 +22,22 @@ namespace Lungs
             IJobDetail bloodProducer = JobBuilder.Create<BloodProducerWorker>()
                 .Build();
 
-            ITrigger trigger = TriggerBuilder.Create()
-                .StartNow()
-                .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(5)
-                    .RepeatForever())
-                .Build();
+            List<IJobDetail> jobs = [heartBloodProducerWorker, myocyteDiffusionWorker, bloodProducer];
 
             // Schedule the job
-            await scheduler.ScheduleJob(heartBloodProducerWorker, trigger);
-            await scheduler.ScheduleJob(myocyteDiffusionWorker, trigger);
-            await scheduler.ScheduleJob(bloodProducer, trigger);
+            foreach (var job in jobs)
+            {
+                ITrigger trigger = TriggerBuilder.Create()
+                    .StartNow()
+                    .WithSimpleSchedule(x => x
+                        .WithIntervalInSeconds(5)
+                        .RepeatForever())
+                    .Build();
+
+                await scheduler.ScheduleJob(job, trigger);
+            }
+
+            await scheduler.Start();
         }
     }
 }

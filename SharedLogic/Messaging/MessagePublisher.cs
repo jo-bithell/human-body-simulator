@@ -1,45 +1,42 @@
-﻿using Confluent.Kafka;
+﻿using RabbitMQ.Client;
+using System.Text;
 using System.Text.Json;
 
 namespace KafkaCommon
 {
     public class MessagePublisher<T>
     {
-        private IProducer<string, string>? _producer;
-        private string _topic;
+        private IModel _channel;
+        private string _routingKey;
 
-        public MessagePublisher(string topic)
+        public MessagePublisher(string routingKey)
         {
-            if (_producer == null)
+            var factory = new ConnectionFactory
             {
-                var config = new ProducerConfig
-                {
-                    BootstrapServers = "localhost:9092",
-                };
-
-                _producer = new ProducerBuilder<string, string>(config).Build();
-            }
-
-            _topic = topic;
-        }
-
-        public async Task SendMessage(T message)
-        {
-            await Publish(message);
-        }
-
-        private async Task Publish(T message)
-        {
-            var serializedMessage = JsonSerializer.Serialize(message);
-            var kafkaMessage = new Message<string, string>
-            {
-                Value = serializedMessage
+                HostName = "localhost",
+                UserName = "guest",
+                Password = "guest"
             };
 
-            if (_producer != null)
-            {
-                await _producer.ProduceAsync(_topic, kafkaMessage);
-            }
+            var connection = factory.CreateConnection();
+            _channel = connection.CreateModel();
+
+            _routingKey = routingKey;
+
+            _channel.ExchangeDeclare(string.Empty, ExchangeType.Direct);
+        }
+
+        public void SendMessage(T message)
+        {
+            Publish(message);
+        }
+
+        private void Publish(T message)
+        {
+            var serializedMessage = JsonSerializer.Serialize(message);
+            var body = Encoding.UTF8.GetBytes(serializedMessage);
+
+            _channel.BasicPublish(string.Empty, routingKey: _routingKey, body: body);
         }
     }
 }

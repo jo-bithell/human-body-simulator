@@ -1,5 +1,7 @@
-﻿using Confluent.Kafka;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System.Text;
 using System.Text.Json;
 
 namespace KafkaCommon
@@ -7,59 +9,54 @@ namespace KafkaCommon
     public class MessageConsumer<T> : BackgroundService
     {
         private readonly SnapshotCache<T> _snapshotCache;
-        private readonly string _topic;
-        public MessageConsumer(SnapshotCache<T> snapshotCache, string topic)
+        private readonly string _queueName;
+        private readonly IConnection _connection;
+        private readonly IModel _channel;
+
+        public MessageConsumer(SnapshotCache<T> snapshotCache, string queueName)
         {
             _snapshotCache = snapshotCache;
-            _topic = topic;
+            _queueName = queueName;
+
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+            _connection = factory.CreateConnection();
+            _channel = _connection.CreateModel();
+            _channel.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var config = new ConsumerConfig
+            var consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += (model, ea) =>
             {
-                BootstrapServers = "localhost:9092",
-                GroupId = "biology",
-                AutoOffsetReset = AutoOffsetReset.Earliest,
+                var body = ea.Body.ToArray();
+                var message = Encoding.UTF8.GetString(body);
+
+                Console.Write("Consumed message");
+
+                ProcessMessage(message, stoppingToken);
             };
 
-            Task.Run(() => ConsumeMessage(config, stoppingToken), stoppingToken);
+            _channel.BasicConsume(queue: _queueName, autoAck: true, consumer: consumer);
 
             return Task.CompletedTask;
         }
 
-        private void ConsumeMessage(ConsumerConfig consumerConfig, CancellationToken stoppingToken)
+        private void ProcessMessage(string message, CancellationToken stoppingToken)
         {
-            using (var consumer = new ConsumerBuilder<Ignore, string>(consumerConfig).Build())
-            {
-                consumer.Subscribe(_topic);
-                try
-                {
-                    while (!stoppingToken.IsCancellationRequested)
-                    {
-                        var result = consumer.Consume(stoppingToken);
+            var deserializedMessage = JsonSerializer.Deserialize<T>(message);
 
-                        Console.Write($"Consumed message");
-
-                        ProcessMessage(result, stoppingToken);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    consumer.Close();
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
-
-        private void ProcessMessage(ConsumeResult<Ignore, string> result, CancellationToken stoppingToken)
-        {
-            var message = JsonSerializer.Deserialize<T>(result.Message.Value);
-
-            if (message == null)
+            if (deserializedMessage == null)
                 return;
 
-            _snapshotCache.Queue.Enqueue(message);
+            _snapshotCache.Queue.Enqueue(deserializedMessage);
+        }
+
+        public override void Dispose()
+        {
+            _channel.Close();
+            _connection.Close();
+            base.Dispose();
         }
     }
 }

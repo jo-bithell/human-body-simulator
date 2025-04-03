@@ -3,7 +3,6 @@ using KafkaCommon;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedLogic.Models.Cells;
-using SharedLogic;
 using Mouth;
 using Stomach;
 
