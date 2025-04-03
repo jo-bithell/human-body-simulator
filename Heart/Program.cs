@@ -2,8 +2,8 @@
 using KafkaCommon;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SharedLogic;
 using SharedLogic.Models.Cells;
+using Lungs;
 
 namespace Heart
 {
@@ -12,6 +12,7 @@ namespace Heart
         private static int _numberOfCells = 100;
         static async Task Main(string[] args)
         {
+            await WorkerScheduler.ScheduleJobs();
             var deoxygenatedHostTask = CreateRightAtriumHostBuilder(args).Build().RunAsync();
             var oxygenatedHostTask = CreateLeftAtriumHostBuilder(args).Build().RunAsync();
 
@@ -41,8 +42,6 @@ namespace Heart
                 {
                     return new MessagePublisher<Blood>("lungs");
                 });
-                services.AddHostedService<HeartBloodProducerWorker>();
-                services.AddHostedService<BloodDiffusionWorker<Myocyte>>();
             });
 
         public static IHostBuilder CreateLeftAtriumHostBuilder(string[] args) =>
@@ -69,8 +68,6 @@ namespace Heart
                 {
                     return new MessagePublisher<Blood>("rest-of-the-body");
                 });
-                services.AddHostedService<HeartBloodProducerWorker>();
-                services.AddHostedService<BloodDiffusionWorker<Myocyte>>();
             });
     }
 }

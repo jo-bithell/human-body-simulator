@@ -1,10 +1,10 @@
 ﻿using KafkaCommon;
+using Quartz;
 using SharedLogic.Models;
-using SharedLogic.Workers;
 
 namespace SharedLogic
 {
-    public class BloodProducerWorker : BaseWorker
+    public class BloodProducerWorker : IJob
     {
         private readonly MessagePublisher<Blood> _producerService;
         private readonly SnapshotCache<Blood> _bloodCacheCache;
@@ -15,17 +15,13 @@ namespace SharedLogic
             _bloodCacheCache = bloodCache;
         }
 
-        public override async Task PerformAction(CancellationToken cancellationToken)
+        public async Task Execute(IJobExecutionContext context)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            while (_bloodCacheCache.Queue.TryDequeue(out var blood))
             {
-                while (_bloodCacheCache.Queue.TryDequeue(out var blood))
-                {
-                    await _producerService.SendMessage(blood);
-                }
-
-                await Task.Delay(1000, cancellationToken);
+                await _producerService.SendMessage(blood);
             }
+            await Task.CompletedTask;
         }
     }
 }

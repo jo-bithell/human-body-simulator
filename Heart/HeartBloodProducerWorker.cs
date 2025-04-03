@@ -1,11 +1,12 @@
 ﻿using KafkaCommon;
+using Quartz;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
 using SharedLogic.Workers;
 
 namespace Heart
 {
-    public class HeartBloodProducerWorker : BaseRespirationWorker
+    public class HeartBloodProducerWorker : IJob
     {
         private readonly MessagePublisher<Blood> _producerService;
         private readonly SnapshotCache<Blood> _bloodCache;
@@ -20,7 +21,7 @@ namespace Heart
             _myocytes = heartCells;
         }
 
-        public override async Task PerformAction(CancellationToken cancellationToken)
+        public async Task Execute(IJobExecutionContext context)
         {
             PopulateBloodCache();
             PerformMotion();
@@ -33,6 +34,8 @@ namespace Heart
                         await _producerService.SendMessage(blood);
                 }
             }
+
+            await Task.CompletedTask;
         }
 
         private void PopulateBloodCache()
@@ -44,7 +47,7 @@ namespace Heart
             }
         }
 
-        protected override void PerformMotion()
+        private void PerformMotion()
         {
             foreach (Myocyte myocyte in _myocytes)
             {

@@ -4,7 +4,6 @@ using Microsoft.Extensions.Hosting;
 using SharedLogic;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
-using SharedLogic.Services;
 
 namespace Mouth
 {
@@ -14,8 +13,9 @@ namespace Mouth
         private static int _digestionChunkSize = 100;
         private static string _inputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input"));
         private static string _outputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "Stomach", "input"));
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
+            await WorkerScheduler.ScheduleJobs();
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -55,8 +55,6 @@ namespace Mouth
             {
                 return new MessagePublisher<Blood>("right-atrium");
             });
-            services.AddHostedService<BloodDiffusionWorker<Myocyte>>();
-            services.AddHostedService<BloodProducerWorker>();
         });
     }
 }

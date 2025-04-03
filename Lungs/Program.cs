@@ -2,15 +2,15 @@
 using KafkaCommon;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SharedLogic;
 using Lungs;
 using SharedLogic.Models.Cells;
 
 class Program
 {
     private static int _numberOfCells = 100;
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
+        await WorkerScheduler.ScheduleJobs();
         CreateHostBuilder(args).Build().Run();
     }
 
@@ -46,11 +46,6 @@ class Program
                 var snapshotCache = provider.GetRequiredService<SnapshotCache<Blood>>();
                 return new MessageConsumer<Blood>(snapshotCache, "lungs");
             });
-            services.AddHostedService<BloodDiffusionWorker<Myocyte>>();
-            services.AddHostedService<BloodDiffusionWorker<AlveolarCell>>();
             services.AddSingleton<Air>();
-            services.AddHostedService<AirDiffusionWorker>();
-            services.AddHostedService<BloodProducerWorker>();
-            services.AddHostedService<BreathingWorker>();
         });
 }

@@ -55,8 +55,6 @@ namespace SmallIntestine
                 {
                     return new MessagePublisher<Blood>("right-atrium");
                 });
-                services.AddHostedService<BloodDiffusionWorker<Myocyte>>();
-                services.AddHostedService<BloodProducerWorker>();
             });
     }
 }

@@ -1,11 +1,11 @@
 ﻿using KafkaCommon;
+using Quartz;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
-using SharedLogic.Workers;
 
 namespace SharedLogic
 {
-    public class BloodDiffusionWorker<C> : BaseWorker where C : Cell
+    public class BloodDiffusionWorker<C> : IJob where C : Cell
     {
         private readonly SnapshotCache<Blood> _bloodCacheCache;
         private readonly List<C> _cells;
@@ -16,18 +16,16 @@ namespace SharedLogic
             _cells = cells;
         }
 
-        public override async Task PerformAction(CancellationToken cancellationToken)
+        public async Task Execute(IJobExecutionContext context)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            while (_bloodCacheCache.Queue.TryDequeue(out var blood))
             {
-                while (_bloodCacheCache.Queue.TryDequeue(out var blood))
-                {
-                    await Task.Delay(1000, cancellationToken);
-                    DiffuseNutrients(blood);
-                    Console.WriteLine("Diffused nutrients to blood");
-                    _bloodCacheCache.Queue.Enqueue(blood);
-                }
+                DiffuseNutrients(blood);
+                Console.WriteLine("Diffused nutrients to blood");
+                _bloodCacheCache.Queue.Enqueue(blood);
             }
+
+            await Task.CompletedTask;
         }
 
         private void DiffuseNutrients(Blood blood)

@@ -1,36 +1,32 @@
-﻿using KafkaCommon;
+﻿using Quartz;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
-using SharedLogic.Workers;
 
 namespace Lungs
 {
-    public class BreathingWorker : BaseRespirationWorker
+    internal class BreathingWorker : IJob
     {
         private readonly int _atpThreshold = 5;
         private readonly List<Myocyte> _lungCells;
         private readonly Air _air;
 
-        public BreathingWorker(MessagePublisher<Blood> producerService, List<Myocyte> lungCells, Air air)
+        public BreathingWorker(List<Myocyte> lungCells, Air air)
         {
             _lungCells = lungCells;
             _air = air;
         }
 
-        public override async Task PerformAction(CancellationToken cancellationToken)
+        public async Task Execute(IJobExecutionContext context)
         {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                // Pretend this intakes oxygen
-                PerformMotion();
-                RefreshAirInLungs();
-                Console.WriteLine("Blood oxygenated");
+            // Pretend this intakes oxygen
+            PerformMotion();
+            RefreshAirInLungs();
+            Console.WriteLine("Blood oxygenated");
 
-                await Task.Delay(1000, cancellationToken);
-            }
+            await Task.CompletedTask;
         }
 
-        protected override void PerformMotion()
+        private void PerformMotion()
         {
             foreach (Myocyte lungCell in _lungCells)
             {

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using SharedLogic.Models.Cells;
 using SharedLogic;
 using Mouth;
+using Stomach;
 
 class Program
 {
@@ -12,8 +13,9 @@ class Program
     private static int _digestionChunkSize = 10;
     private static string _inputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input"));
     private static string _outputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "LargeIntestine", "input"));
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
+        await WorkerScheduler.ScheduleJobs();
         CreateHostBuilder(args).Build().Run();
     }
 
@@ -45,7 +47,5 @@ class Program
             {
                 return new MessagePublisher<Blood>("right-atrium");
             });
-            services.AddHostedService<BloodDiffusionWorker<Myocyte>>();
-            services.AddHostedService<BloodProducerWorker>();
         });
 }
