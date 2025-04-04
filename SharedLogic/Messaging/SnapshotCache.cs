@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace KafkaCommon
+namespace SharedLogic.Messaging
 {
     public class SnapshotCache<T>
     {

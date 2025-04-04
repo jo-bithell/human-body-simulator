@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace KafkaCommon
+namespace SharedLogic.Messaging
 {
     public class MessagePublisher<T>
     {
@@ -23,7 +23,7 @@ namespace KafkaCommon
 
             _routingKey = routingKey;
 
-            _channel.ExchangeDeclare(string.Empty, ExchangeType.Direct);
+            _channel.ExchangeDeclare("not-default", ExchangeType.Direct);
         }
 
         public void SendMessage(T message)

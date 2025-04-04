@@ -1,5 +1,5 @@
-﻿using KafkaCommon;
-using Quartz;
+﻿using Quartz;
+using SharedLogic.Messaging;
 using SharedLogic.Models;
 
 namespace SharedLogic

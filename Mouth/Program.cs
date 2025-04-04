@@ -1,7 +1,8 @@
-﻿using KafkaCommon;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Quartz;
 using SharedLogic;
+using SharedLogic.Messaging;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
 
@@ -13,9 +14,8 @@ namespace Mouth
         private static int _digestionChunkSize = 100;
         private static string _inputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input"));
         private static string _outputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "Stomach", "input"));
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
-            await WorkerScheduler.ScheduleJobs();
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -54,6 +54,20 @@ namespace Mouth
             services.AddSingleton(provider =>
             {
                 return new MessagePublisher<Blood>("right-atrium");
+            });
+            services.AddQuartz(q =>
+            {
+                q.ScheduleJob<BloodDiffusionWorker<Myocyte>>(trigger => trigger
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(5)
+                    .RepeatForever()));
+
+                q.ScheduleJob<BloodProducerWorker>(trigger => trigger
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(5)
+                    .RepeatForever()));
             });
         });
     }

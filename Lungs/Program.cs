@@ -1,16 +1,17 @@
 ﻿using SharedLogic.Models;
-using KafkaCommon;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Lungs;
 using SharedLogic.Models.Cells;
+using Quartz;
+using SharedLogic;
+using SharedLogic.Messaging;
 
 class Program
 {
     private static int _numberOfCells = 100;
-    static async Task Main(string[] args)
+    static void Main(string[] args)
     {
-        await WorkerScheduler.ScheduleJobs();
         CreateHostBuilder(args).Build().Run();
     }
 
@@ -47,5 +48,38 @@ class Program
                 return new MessageConsumer<Blood>(snapshotCache, "lungs");
             });
             services.AddSingleton<Air>();
+            services.AddQuartz(q =>
+            {
+                q.ScheduleJob<BloodDiffusionWorker<Myocyte>>(trigger => trigger
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(5)
+                    .RepeatForever()));
+
+                q.ScheduleJob<BloodProducerWorker>(trigger => trigger
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(5)
+                    .RepeatForever()));
+
+                q.ScheduleJob<BreathingWorker>(trigger => trigger
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(5)
+                    .RepeatForever()));
+
+                q.ScheduleJob<AirDiffusionWorker>(trigger => trigger
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(5)
+                    .RepeatForever()));
+
+                q.ScheduleJob<BloodDiffusionWorker<AlveolarCell>>(trigger => trigger
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(5)
+                    .RepeatForever()));
+            });
+
         });
 }

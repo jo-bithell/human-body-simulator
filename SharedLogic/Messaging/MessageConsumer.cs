@@ -4,7 +4,7 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 
-namespace KafkaCommon
+namespace SharedLogic.Messaging
 {
     public class MessageConsumer<T> : BackgroundService
     {

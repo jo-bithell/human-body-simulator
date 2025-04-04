@@ -1,9 +1,10 @@
 ﻿using SharedLogic.Models;
-using KafkaCommon;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedLogic;
 using SharedLogic.Models.Cells;
+using Quartz;
+using SharedLogic.Messaging;
 
 namespace SmallIntestine
 {
@@ -54,6 +55,20 @@ namespace SmallIntestine
                 services.AddSingleton(provider =>
                 {
                     return new MessagePublisher<Blood>("right-atrium");
+                });
+                services.AddQuartz(q =>
+                {
+                    q.ScheduleJob<BloodDiffusionWorker<Myocyte>>(trigger => trigger
+                    .StartNow()
+                    .WithSimpleSchedule(x => x
+                        .WithIntervalInSeconds(5)
+                        .RepeatForever()));
+
+                    q.ScheduleJob<BloodProducerWorker>(trigger => trigger
+                    .StartNow()
+                    .WithSimpleSchedule(x => x
+                        .WithIntervalInSeconds(5)
+                        .RepeatForever()));
                 });
             });
     }
