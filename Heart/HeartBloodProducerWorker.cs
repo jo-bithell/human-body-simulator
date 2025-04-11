@@ -2,6 +2,8 @@
 using SharedLogic.Messaging;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
+using SharedLogic.Services;
+using System.Text.Json;
 
 namespace Heart
 {
@@ -9,21 +11,21 @@ namespace Heart
     {
         private readonly MessagePublisher<Blood> _producerService;
         private readonly SnapshotCache<Blood> _bloodCache;
-        private readonly List<Myocyte> _myocytes;
+        private readonly IRedisCacheService _cacheService;
         private readonly int _pumpCapacity = 100;
         private readonly int _atpThreshold = 5;
 
-        public HeartBloodProducerWorker(MessagePublisher<Blood> producerService, SnapshotCache<Blood> bloodCache, List<Myocyte> heartCells)
+        public HeartBloodProducerWorker(MessagePublisher<Blood> producerService, SnapshotCache<Blood> bloodCache, IRedisCacheService cacheService)
         {
             _producerService = producerService;
             _bloodCache = bloodCache;
-            _myocytes = heartCells;
+            _cacheService = cacheService;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
             PopulateBloodCache();
-            PerformMotion();
+            await PerformMotion();
 
             for (int i = 0; i < _pumpCapacity; i ++)
             {
@@ -37,6 +39,7 @@ namespace Heart
             await Task.CompletedTask;
         }
 
+        // TODO: do this on startup
         private void PopulateBloodCache()
         {
             for (int i = 0; i < 5; i++)
@@ -46,12 +49,18 @@ namespace Heart
             }
         }
 
-        private void PerformMotion()
+        private async Task PerformMotion()
         {
-            foreach (Myocyte myocyte in _myocytes)
+            for (int i = 0; i < 5; i++)
             {
-                myocyte.PerformMotion(_atpThreshold);
-                Console.WriteLine("Heart cell performed motion");
+                var key = $"lungs-{nameof(Myocyte)}-{i.ToString()}";
+                var cell = await _cacheService.GetAsync<Myocyte>(key);
+
+                if (cell != null)
+                    cell.PerformMotion(_atpThreshold);
+
+                var serializedCell = JsonSerializer.Serialize(cell);
+                await _cacheService.SetAsync(key, serializedCell);
             }
         }
     }

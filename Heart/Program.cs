@@ -5,6 +5,7 @@ using SharedLogic.Models.Cells;
 using Quartz;
 using SharedLogic;
 using SharedLogic.Messaging;
+using SharedLogic.Services;
 
 namespace Heart
 {
@@ -43,6 +44,7 @@ namespace Heart
                     return new MessagePublisher<Blood>("lungs");
                 });
                 services.AddScoped<HeartBloodProducerWorker>();
+                services.AddHostedService<BloodCachePopulatorService>();
                 services.AddScoped<BloodDiffusionWorker<Myocyte>>();
                 services.AddQuartz(q =>
                 {

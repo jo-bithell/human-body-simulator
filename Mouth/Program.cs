@@ -23,14 +23,24 @@ namespace Mouth
         Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
         {
-            services.AddSingleton(provider =>
+            // Core services
+            // RabbitMQ
+            // Redis
+            // Digestion
+            // Quartz
+            services.AddQuartz(q =>
             {
-                var myocytes = new List<Myocyte>();
-                for (int i = 0; i < _numberOfCells; i++)
-                {
-                    myocytes.Add(new Myocyte());
-                }
-                return myocytes;
+                q.ScheduleJob<BloodDiffusionWorker<Myocyte>>(trigger => trigger
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(5)
+                    .RepeatForever()));
+
+                q.ScheduleJob<BloodProducerWorker>(trigger => trigger
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(5)
+                    .RepeatForever()));
             });
             services.AddSingleton(provider =>
             {
@@ -49,26 +59,9 @@ namespace Mouth
             services.AddHostedService(provider =>
             {
                 var snapshotCache = provider.GetRequiredService<SnapshotCache<Blood>>();
-                return new MessageConsumer<Blood>(snapshotCache, "rest-of-the-body");
+                return new MessageConsumer<Blood>(snapshotCache, "mouth");
             });
-            services.AddSingleton(provider =>
-            {
-                return new MessagePublisher<Blood>("right-atrium");
-            });
-            services.AddQuartz(q =>
-            {
-                q.ScheduleJob<BloodDiffusionWorker<Myocyte>>(trigger => trigger
-                .StartNow()
-                .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(5)
-                    .RepeatForever()));
-
-                q.ScheduleJob<BloodProducerWorker>(trigger => trigger
-                .StartNow()
-                .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(5)
-                    .RepeatForever()));
-            });
+            services.AddSingleton(provider => new MessagePublisher<Blood>("right-atrium"));
         });
     }
 }

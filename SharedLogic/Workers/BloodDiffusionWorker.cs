@@ -2,37 +2,47 @@
 using SharedLogic.Messaging;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
+using SharedLogic.Services;
+using System.Text.Json;
 
 namespace SharedLogic
 {
     public class BloodDiffusionWorker<C> : IJob where C : Cell
     {
         private readonly SnapshotCache<Blood> _bloodCacheCache;
-        private readonly List<C> _cells;
+        private readonly IRedisCacheService _cacheService;
+        private readonly string _projectCalledFrom;
 
-        public BloodDiffusionWorker(SnapshotCache<Blood> bloodCache, List<C> cells)
+        public BloodDiffusionWorker(SnapshotCache<Blood> bloodCache, IRedisCacheService cacheService, string projectCalledFrom)
         {
             _bloodCacheCache = bloodCache;
-            _cells = cells;
+            _cacheService = cacheService;
+            _projectCalledFrom = projectCalledFrom;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
             while (_bloodCacheCache.Queue.TryDequeue(out var blood))
             {
-                DiffuseNutrients(blood);
-                Console.WriteLine("Diffused nutrients to blood");
+                await DiffuseNutrients(blood);
                 _bloodCacheCache.Queue.Enqueue(blood);
             }
 
             await Task.CompletedTask;
         }
 
-        private void DiffuseNutrients(Blood blood)
+        private async Task DiffuseNutrients(Blood blood)
         {
-            foreach (var cell in _cells)
+            for (int i = 0; i < 5; i++)
             {
-                cell.DiffuseNutrients(blood);
+                var key = $"{_projectCalledFrom}-{typeof(C).Name.ToLower()}-{i.ToString()}";
+                var cell = await _cacheService.GetAsync<C>(key);
+
+                if (cell != null)
+                    cell.DiffuseNutrients(blood);
+
+                var serializedCell = JsonSerializer.Serialize(cell);
+                await _cacheService.SetAsync(key, serializedCell);
             }
         }
     }

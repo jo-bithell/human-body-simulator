@@ -1,27 +1,35 @@
 ﻿using Quartz;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
+using SharedLogic.Services;
+using System.Text.Json;
 
 namespace Lungs
 {
     internal class AirDiffusionWorker : IJob
     {
         private readonly Air _air;
-        private readonly List<AlveolarCell> _alveolarCells;
+        private readonly IRedisCacheService _cacheService;
 
-        public AirDiffusionWorker(Air air, List<AlveolarCell> cells)
+        public AirDiffusionWorker(Air air, IRedisCacheService cacheService)
         {
             _air = air;
-            _alveolarCells = cells;
+            _cacheService = cacheService;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
-            foreach (var cell in _alveolarCells)
+            for (int i = 0; i < 5; i++)
             {
-                cell.DiffuseGases(_air);
+                var key = $"lungs-{nameof(AlveolarCell)}-{i.ToString()}";
+                var cell = await _cacheService.GetAsync<AlveolarCell>(key);
+
+                if (cell != null)
+                    cell.DiffuseGases(_air);
+
+                var serializedCell = JsonSerializer.Serialize(cell);
+                await _cacheService.SetAsync(key, serializedCell);
             }
-            Console.WriteLine("Diffused gases");
             await Task.CompletedTask;
         }
     }
