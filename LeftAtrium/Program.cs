@@ -1,11 +1,10 @@
-﻿using SharedLogic.Models;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SharedLogic.Models.Cells;
-using Quartz;
 using SharedLogic;
 using SharedLogic.Messaging;
-using SharedLogic.Services;
+using SharedLogic.Models;
+using SharedLogic.Models.Cells;
+using Quartz;
 
 namespace Heart
 {
@@ -14,11 +13,12 @@ namespace Heart
         private static int _numberOfCells = 5;
         static async Task Main(string[] args)
         {
-            var deoxygenatedHostTask = CreateRightAtriumHostBuilder(args).Build().RunAsync();
-            await Task.WhenAll(deoxygenatedHostTask);
+            var oxygenatedHostTask = CreateLeftAtriumHostBuilder(args).Build().RunAsync();
+
+            await Task.WhenAll(oxygenatedHostTask);
         }
 
-        public static IHostBuilder CreateRightAtriumHostBuilder(string[] args) =>
+        public static IHostBuilder CreateLeftAtriumHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
@@ -26,7 +26,7 @@ namespace Heart
                 services.AddHostedService(provider =>
                 {
                     var snapshotCache = provider.GetRequiredService<SnapshotCache<Blood>>();
-                    return new MessageConsumer<Blood>(snapshotCache, "right-atrium");
+                    return new MessageConsumer<Blood>(snapshotCache, "left-atrium");
                 });
                 services.AddSingleton(provider =>
                 {
@@ -43,12 +43,7 @@ namespace Heart
                     });
                     return myocytes;
                 });
-                services.AddSingleton(provider =>
-                {
-                    return new MessagePublisher<Blood>("lungs");
-                });
                 services.AddScoped<HeartBloodProducerWorker>();
-                services.AddHostedService<BloodCachePopulatorService>();
                 services.AddScoped<BloodDiffusionWorker<Myocyte>>();
                 services.AddQuartz(q =>
                 {
@@ -70,8 +65,6 @@ namespace Heart
                         .WithIntervalInSeconds(5)
                         .RepeatForever()));
                 });
-                services.AddQuartzHostedService();
-
             });
     }
 }

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Heart", "Heart\Heart.csproj", "{DE16DA39-1379-4312-A716-51C7B5641A8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RightAtrium", "Heart\RightAtrium.csproj", "{DE16DA39-1379-4312-A716-51C7B5641A8B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BiologyTests", "BiologyTest\BiologyTests.csproj", "{962803CA-CFE1-4BC3-98CA-12BE47B16185}"
 EndProject
@@ -20,7 +20,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8BF78EE6-36CE-47CB-A724-72F239CA2CFC}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		TODO.md = TODO.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeftAtrium", "LeftAtrium\LeftAtrium.csproj", "{5865EF8D-91FD-455D-927F-4247302A146B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +59,10 @@ Global
 		{9AD7D2BC-C21F-43C9-B5E8-ED64CEBBAFC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AD7D2BC-C21F-43C9-B5E8-ED64CEBBAFC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AD7D2BC-C21F-43C9-B5E8-ED64CEBBAFC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5865EF8D-91FD-455D-927F-4247302A146B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5865EF8D-91FD-455D-927F-4247302A146B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5865EF8D-91FD-455D-927F-4247302A146B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5865EF8D-91FD-455D-927F-4247302A146B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

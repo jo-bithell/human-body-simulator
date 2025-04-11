@@ -1,0 +1,7 @@
+- Frontend
+- signalR
+- RedisCache
+- Digestive system
+- CI/CD
+- Containerization
+- oxygenated blood to lungs

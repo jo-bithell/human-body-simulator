@@ -50,7 +50,7 @@ namespace SmallIntestine
                 services.AddHostedService(provider =>
                 {
                     var snapshotCache = provider.GetRequiredService<SnapshotCache<Blood>>();
-                    return new MessageConsumer<Blood>(snapshotCache, "rest-of-the-body");
+                    return new MessageConsumer<Blood>(snapshotCache, "small-intestine");
                 });
                 services.AddSingleton(provider =>
                 {

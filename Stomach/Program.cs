@@ -40,7 +40,7 @@ class Program
             services.AddHostedService(provider =>
             {
                 var snapshotCache = provider.GetRequiredService<SnapshotCache<Blood>>();
-                return new MessageConsumer<Blood>(snapshotCache, "rest-of-the-body");
+                return new MessageConsumer<Blood>(snapshotCache, "stomach");
             });
             services.AddSingleton(provider =>
             {
