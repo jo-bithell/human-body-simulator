@@ -7,13 +7,13 @@ using System.Text.Json;
 
 namespace SharedLogic
 {
-    public class BloodDiffusionWorker<C> : IJob where C : Cell
+    public class BloodDiffusionJob<C> : IJob where C : Cell
     {
         private readonly SnapshotCache<Blood> _bloodCacheCache;
         private readonly IRedisCacheService _cacheService;
         private readonly string _projectCalledFrom;
 
-        public BloodDiffusionWorker(SnapshotCache<Blood> bloodCache, IRedisCacheService cacheService, string projectCalledFrom)
+        public BloodDiffusionJob(SnapshotCache<Blood> bloodCache, IRedisCacheService cacheService, string projectCalledFrom)
         {
             _bloodCacheCache = bloodCache;
             _cacheService = cacheService;

@@ -5,12 +5,13 @@ using SharedLogic;
 using SharedLogic.Models.Cells;
 using Quartz;
 using SharedLogic.Messaging;
+using SharedLogic.Services;
+using StackExchange.Redis;
 
 namespace SmallIntestine
 {
     class Program
     {
-        private static int _numberOfCells = 100;
         private static string _inputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input"));
         private static string _outputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "LargeIntestine", "input"));
         static void Main(string[] args)
@@ -22,49 +23,45 @@ namespace SmallIntestine
         Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton(provider =>
-                {
-                    var mouthCells = new List<Myocyte>();
-                    for (int i = 0; i < _numberOfCells; i++)
-                    {
-                        mouthCells.Add(new Myocyte());
-                    }
-                    return mouthCells;
-                });
-                services.AddSingleton(provider =>
-                {
-                    var mouthCells = new List<Enterocyte>();
-                    for (int i = 0; i < _numberOfCells; i++)
-                    {
-                        mouthCells.Add(new Enterocyte());
-                    }
-                    return mouthCells;
-                });
+                // Core services
+                services.AddSingleton("small-intestine");
                 services.AddSingleton<SnapshotCache<Blood>>();
                 services.AddSingleton<ChemicalDigestionService>();
-                services.AddHostedService(provider =>
-                {
-                    var csvService = provider.GetRequiredService<ChemicalDigestionService>();
-                    return new CsvWorker<ChemicalDigestionService>(csvService, _inputDirectory, _outputDirectory);
-                });
-                services.AddHostedService(provider =>
-                {
-                    var snapshotCache = provider.GetRequiredService<SnapshotCache<Blood>>();
-                    return new MessageConsumer<Blood>(snapshotCache, "small-intestine");
-                });
+
+                // Redis
+                services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost: 6379"));
+                services.AddSingleton<IRedisCacheService, RedisCacheService>();
+                services.AddHostedService<CellCachePopulatorService<Myocyte>>();
+                services.AddHostedService<CellCachePopulatorService<Enterocyte>>();
+
+                // RabbitMQ
+                services.AddHostedService<MessageConsumer<Blood>>();
                 services.AddSingleton(provider =>
                 {
                     return new MessagePublisher<Blood>("right-atrium");
                 });
+                // Quartz
                 services.AddQuartz(q =>
                 {
-                    q.ScheduleJob<BloodDiffusionWorker<Myocyte>>(trigger => trigger
+                    q.ScheduleJob<BloodDiffusionJob<Myocyte>>(trigger => trigger
                     .StartNow()
                     .WithSimpleSchedule(x => x
                         .WithIntervalInSeconds(5)
                         .RepeatForever()));
 
-                    q.ScheduleJob<BloodProducerWorker>(trigger => trigger
+                    q.ScheduleJob<BloodDiffusionJob<Enterocyte>>(trigger => trigger
+                    .StartNow()
+                    .WithSimpleSchedule(x => x
+                        .WithIntervalInSeconds(5)
+                        .RepeatForever()));
+
+                    q.ScheduleJob<BloodProducerJob>(trigger => trigger
+                    .StartNow()
+                    .WithSimpleSchedule(x => x
+                        .WithIntervalInSeconds(5)
+                        .RepeatForever()));
+
+                    q.ScheduleJob<CsvJob<ChemicalDigestionService>>(trigger => trigger
                     .StartNow()
                     .WithSimpleSchedule(x => x
                         .WithIntervalInSeconds(5)

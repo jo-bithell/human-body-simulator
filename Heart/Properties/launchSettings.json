@@ -1,10 +1,7 @@
 {
   "profiles": {
-    "Heart": {
+    "RightAtrium": {
       "commandName": "Project"
-    },
-    "Container (Dockerfile)": {
-      "commandName": "Docker"
     }
   }
 }

@@ -1,7 +1,20 @@
-﻿namespace CsvCommon
+﻿using SharedLogic.Models.Cells;
+using SharedLogic.Services;
+using System.Text.Json;
+
+namespace CsvCommon
 {
     public abstract class BaseCsvService : IBaseCsvService
     {
+        private readonly int _atpThreshold = 5;
+        private readonly IRedisCacheService _cacheService;
+        private readonly string _projectCalledFrom;
+        public BaseCsvService(IRedisCacheService cacheService, string projectCalledFrom)
+        {
+            _cacheService = cacheService;
+            _projectCalledFrom = projectCalledFrom;
+        }
+
         public List<string[]> ReadCsvFile(string filePath)
         {
             var records = new List<string[]>();
@@ -22,19 +35,7 @@
             return records;
         }
 
-        public virtual void DigestFood(List<string[]> records, string outputDirectory)
-        {
-            var chunkSize = 10;
-            int fileIndex = 0;
-
-            for (int i = 0; i < records.Count; i += chunkSize)
-            {
-                var chunk = records.GetRange(i, Math.Min(chunkSize, records.Count - i));
-                string outputFilePath = Path.Combine(outputDirectory, $"chunk_{fileIndex}.csv");
-                WriteCsvFile(outputFilePath, chunk);
-                fileIndex++;
-            }
-        }
+        public virtual async Task DigestFood(List<string[]> records, string outputDirectory) => await Task.CompletedTask;
 
         public void WriteCsvFile(string filePath, List<string[]> records)
         {
@@ -47,6 +48,19 @@
             }
         }
 
-        protected abstract void PerformRespiration();
+        protected virtual async Task PerformRespiration()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                var key = $"{_projectCalledFrom}-{nameof(Myocyte)}-{i.ToString()}";
+                var cell = await _cacheService.GetAsync<Myocyte>(key);
+
+                if (cell != null)
+                    cell.PerformMotion(_atpThreshold);
+
+                var serializedCell = JsonSerializer.Serialize(cell);
+                await _cacheService.SetAsync(key, serializedCell);
+            }
+        }
     }
 }

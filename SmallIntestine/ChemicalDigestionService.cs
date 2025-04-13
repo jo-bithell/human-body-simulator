@@ -1,30 +1,32 @@
 ﻿using CsvCommon;
 using SharedLogic.Enums;
 using SharedLogic.Models.Cells;
+using SharedLogic.Services;
+using System.Text.Json;
 
 namespace SmallIntestine
 {
     public class ChemicalDigestionService : BaseCsvService
     {
-        private readonly int _atpThreshold = 5;
-        private readonly List<Myocyte> _myocytes;
-        private readonly List<Enterocyte> _enterocytes;
-        public ChemicalDigestionService(List<Myocyte> mouthCells, List<Enterocyte> enterocytes)
+        private readonly IRedisCacheService _cacheService;
+        private readonly string _projectCalledFrom;
+        public ChemicalDigestionService(IRedisCacheService cacheService, string projectCalledFrom)
+            : base(cacheService, projectCalledFrom)
         {
-            _myocytes = mouthCells;
-            _enterocytes = enterocytes;
+            _cacheService = cacheService;
+            _projectCalledFrom = projectCalledFrom;
         }
 
-        public override void DigestFood(List<string[]> inputArray, string outputDirectory)
+        public override async Task DigestFood(List<string[]> inputArray, string outputDirectory)
         {
             if (inputArray.Count == 0)
                 return;
 
-            PerformRespiration();
-            ConvertCsvsToFood(inputArray);
+            await PerformRespiration();
+            await ConvertCsvsToFood(inputArray);
         }
 
-        private void ConvertCsvsToFood(List<string[]> inputArray)
+        private async Task ConvertCsvsToFood(List<string[]> inputArray)
         {
             int glucoseCount = 0;
             foreach (string[] nutrientArray in inputArray)
@@ -42,28 +44,19 @@ namespace SmallIntestine
                     glucoseCount += 1;
             }
 
-            foreach (var enterocyte in _enterocytes)
-            {
-                enterocyte.DiffuseNutrients(glucoseCount);
-            }
+            await DiffuseNutrients(glucoseCount);
         }
 
-        private void WriteCsvFile(string filePath, List<string> records)
+        private async Task DiffuseNutrients(int glucoseCount)
         {
-            using (var writer = new StreamWriter(filePath))
+            for (int i = 0; i < 5; i++)
             {
-                foreach (var record in records)
-                {
-                    writer.WriteLine(string.Join(",", record));
-                }
-            }
-        }
-
-        protected override void PerformRespiration()
-        {
-            foreach (Myocyte myocyte in _myocytes)
-            {
-                myocyte.PerformMotion(_atpThreshold);
+                var key = $"{_projectCalledFrom}-{nameof(Enterocyte)}-{i.ToString()}";
+                var cell = await _cacheService.GetAsync<Enterocyte>(key);
+                if (cell != null)
+                    cell.DiffuseNutrients(glucoseCount);
+                var serializedCell = JsonSerializer.Serialize(cell);
+                await _cacheService.SetAsync(key, serializedCell);
             }
         }
     }

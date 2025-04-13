@@ -1,22 +1,23 @@
 ﻿using CsvCommon;
-using SharedLogic.Models.Cells;
 
-namespace Mouth
+namespace SharedLogic.Services
 {
     public class MechanicalDigestionService : BaseCsvService
     {
         private readonly int _atpThreshold = 5;
-        private readonly int _chunkSize;
-        private readonly List<Myocyte> _myocytes;
-        public MechanicalDigestionService(List<Myocyte> mouthCells, int chunkSize)
+        private readonly int _chunkSize = 10;
+        private readonly IRedisCacheService _cacheService;
+        private readonly string _projectCalledFrom;
+        public MechanicalDigestionService(IRedisCacheService cacheService, string projectCalledFrom)
+            : base(cacheService, projectCalledFrom)
         {
-            _myocytes = mouthCells;
-            _chunkSize = chunkSize;
+            _cacheService = cacheService;
+            _projectCalledFrom = projectCalledFrom;
         }
 
-        public override void DigestFood(List<string[]> records, string outputDirectory)
+        public override async Task DigestFood(List<string[]> records, string outputDirectory)
         {
-            PerformRespiration();
+            await PerformRespiration();
             int fileIndex = 0;
 
             for (int i = 0; i < records.Count; i += _chunkSize)
@@ -25,14 +26,6 @@ namespace Mouth
                 string outputFilePath = Path.Combine(outputDirectory, $"chunk_{fileIndex}.csv");
                 WriteCsvFile(outputFilePath, chunk);
                 fileIndex++;
-            }
-        }
-
-        protected override void PerformRespiration()
-        {
-            foreach (Myocyte mouthCell in _myocytes)
-            {
-                mouthCell.PerformMotion(_atpThreshold);
             }
         }
     }

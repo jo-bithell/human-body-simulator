@@ -4,12 +4,12 @@ using SharedLogic.Models;
 
 namespace SharedLogic
 {
-    public class BloodProducerWorker : IJob
+    public class BloodProducerJob : IJob
     {
         private readonly MessagePublisher<Blood> _producerService;
         private readonly SnapshotCache<Blood> _bloodCacheCache;
 
-        public BloodProducerWorker(MessagePublisher<Blood> producerService, SnapshotCache<Blood> bloodCache)
+        public BloodProducerJob(MessagePublisher<Blood> producerService, SnapshotCache<Blood> bloodCache)
         {
             _producerService = producerService;
             _bloodCacheCache = bloodCache;

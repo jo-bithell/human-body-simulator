@@ -2,14 +2,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedLogic.Models.Cells;
-using Mouth;
 using Quartz;
 using SharedLogic;
 using SharedLogic.Messaging;
+using SharedLogic.Services;
+using StackExchange.Redis;
 
 class Program
 {
-    private static int _numberOfCells = 100;
     private static int _digestionChunkSize = 10;
     private static string _inputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input"));
     private static string _outputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "LargeIntestine", "input"));
@@ -22,39 +22,33 @@ class Program
     Host.CreateDefaultBuilder(args)
         .ConfigureServices((hostContext, services) =>
         {
-            services.AddSingleton(provider =>
-            {
-                var mycotes = new List<Myocyte>();
-                for (int i = 0; i < _numberOfCells; i++)
-                {
-                    mycotes.Add(new Myocyte());
-                }
-                return mycotes;
-            });
-            services.AddSingleton(provider =>
-            {
-                var myocytes = provider.GetRequiredService<List<Myocyte>>();
-                return new MechanicalDigestionService(myocytes, _digestionChunkSize);
-            });
+            // Core services
+            services.AddSingleton("stomach");
             services.AddSingleton<SnapshotCache<Blood>>();
-            services.AddHostedService(provider =>
-            {
-                var snapshotCache = provider.GetRequiredService<SnapshotCache<Blood>>();
-                return new MessageConsumer<Blood>(snapshotCache, "stomach");
-            });
+            services.AddSingleton<MechanicalDigestionService>();
+
+            // Redis
+            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost: 6379"));
+            services.AddSingleton<IRedisCacheService, RedisCacheService>();
+            services.AddHostedService<CellCachePopulatorService<Myocyte>>();
+
+            // RabbitMQ
+            services.AddHostedService<MessageConsumer<Blood>>();
             services.AddSingleton(provider =>
             {
                 return new MessagePublisher<Blood>("right-atrium");
             });
+
+            // Quartz
             services.AddQuartz(q =>
             {
-                q.ScheduleJob<BloodDiffusionWorker<Myocyte>>(trigger => trigger
+                q.ScheduleJob<BloodDiffusionJob<Myocyte>>(trigger => trigger
                 .StartNow()
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(5)
                     .RepeatForever()));
 
-                q.ScheduleJob<BloodProducerWorker>(trigger => trigger
+                q.ScheduleJob<BloodProducerJob>(trigger => trigger
                 .StartNow()
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(5)

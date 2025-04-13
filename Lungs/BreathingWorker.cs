@@ -6,13 +6,13 @@ using System.Text.Json;
 
 namespace Lungs
 {
-    internal class BreathingWorker : IJob
+    internal class BreathingJob : IJob
     {
         private readonly int _atpThreshold = 5;
         private readonly IRedisCacheService _cacheService;
         private readonly Air _air;
 
-        public BreathingWorker(IRedisCacheService cacheService, Air air)
+        public BreathingJob(IRedisCacheService cacheService, Air air)
         {
             _cacheService = cacheService;
             _air = air;

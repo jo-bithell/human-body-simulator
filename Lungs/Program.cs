@@ -24,44 +24,44 @@ class Program
                 services.AddSingleton<SnapshotCache<Blood>>();
                 services.AddSingleton<Air>();
 
-                // RabbitMQ
-                services.AddHostedService<MessageConsumer<Blood>>();
-                services.AddSingleton(provider => new MessagePublisher<Blood>("left-atrium"));
-
                 // Redis
-                services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost: 6801"));
+                services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost: 6379"));
                 services.AddSingleton<IRedisCacheService, RedisCacheService>();
                 services.AddHostedService<CellCachePopulatorService<Myocyte>>();
                 services.AddHostedService<CellCachePopulatorService<AlveolarCell>>();
 
+                // RabbitMQ
+                services.AddHostedService<MessageConsumer<Blood>>();
+                services.AddSingleton(provider => new MessagePublisher<Blood>("left-atrium"));
+
                 // Quartz job scheduling
                 services.AddQuartz(q =>
                 {
-                    q.ScheduleJob<BloodDiffusionWorker<Myocyte>>(trigger => trigger
+                    q.ScheduleJob<BloodProducerJob>(trigger => trigger
                         .StartNow()
                         .WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(5)
                             .RepeatForever()));
 
-                    q.ScheduleJob<BloodProducerWorker>(trigger => trigger
+                    q.ScheduleJob<BloodDiffusionJob<Myocyte>>(trigger => trigger
                         .StartNow()
                         .WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(5)
                             .RepeatForever()));
 
-                    q.ScheduleJob<BreathingWorker>(trigger => trigger
+                    q.ScheduleJob<BloodDiffusionJob<AlveolarCell>>(trigger => trigger
                         .StartNow()
                         .WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(5)
                             .RepeatForever()));
 
-                    q.ScheduleJob<AirDiffusionWorker>(trigger => trigger
+                    q.ScheduleJob<BreathingJob>(trigger => trigger
                         .StartNow()
                         .WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(5)
                             .RepeatForever()));
 
-                    q.ScheduleJob<BloodDiffusionWorker<AlveolarCell>>(trigger => trigger
+                    q.ScheduleJob<AirDiffusionJob>(trigger => trigger
                         .StartNow()
                         .WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(5)

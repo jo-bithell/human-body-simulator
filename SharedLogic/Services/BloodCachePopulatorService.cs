@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using SharedLogic.Messaging;
 using SharedLogic.Models;
-using System.Text.Json;
 
 namespace SharedLogic.Services
 {

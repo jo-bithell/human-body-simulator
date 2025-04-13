@@ -3,16 +3,16 @@ using SharedLogic.Messaging;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
 
-namespace Heart
+namespace LeftAtrium
 {
-    public class HeartBloodProducerWorker : IJob
+    internal class BloodProducerJob : IJob
     {
         private readonly SnapshotCache<Blood> _bloodCache;
         private readonly List<Myocyte> _myocytes;
         private readonly int _pumpCapacity = 100;
         private readonly int _atpThreshold = 5;
 
-        public HeartBloodProducerWorker(SnapshotCache<Blood> bloodCache, List<Myocyte> heartCells)
+        internal BloodProducerJob(SnapshotCache<Blood> bloodCache, List<Myocyte> heartCells)
         {
             _bloodCache = bloodCache;
             _myocytes = heartCells;
@@ -20,7 +20,6 @@ namespace Heart
 
         public async Task Execute(IJobExecutionContext context)
         {
-            PopulateBloodCache();
             PerformMotion();
 
             for (int i = 0; i < _pumpCapacity; i ++)
@@ -36,15 +35,6 @@ namespace Heart
             }
 
             await Task.CompletedTask;
-        }
-
-        private void PopulateBloodCache()
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                Blood newBlood = new Blood();
-                _bloodCache.Queue.Enqueue(newBlood);
-            }
         }
 
         private void PerformMotion()

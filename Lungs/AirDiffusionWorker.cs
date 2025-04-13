@@ -6,12 +6,12 @@ using System.Text.Json;
 
 namespace Lungs
 {
-    internal class AirDiffusionWorker : IJob
+    internal class AirDiffusionJob : IJob
     {
         private readonly Air _air;
         private readonly IRedisCacheService _cacheService;
 
-        public AirDiffusionWorker(Air air, IRedisCacheService cacheService)
+        public AirDiffusionJob(Air air, IRedisCacheService cacheService)
         {
             _air = air;
             _cacheService = cacheService;

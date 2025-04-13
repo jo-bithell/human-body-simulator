@@ -6,12 +6,12 @@ using Quartz;
 using SharedLogic;
 using SharedLogic.Messaging;
 using SharedLogic.Services;
+using StackExchange.Redis;
 
-namespace Heart
+namespace RightAtrium
 {
     class Program
     {
-        private static int _numberOfCells = 5;
         static async Task Main(string[] args)
         {
             var deoxygenatedHostTask = CreateRightAtriumHostBuilder(args).Build().RunAsync();
@@ -22,56 +22,38 @@ namespace Heart
         Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
+                // Core services
+                services.AddSingleton("right-atrium");
                 services.AddSingleton<SnapshotCache<Blood>>();
-                services.AddHostedService(provider =>
-                {
-                    var snapshotCache = provider.GetRequiredService<SnapshotCache<Blood>>();
-                    return new MessageConsumer<Blood>(snapshotCache, "right-atrium");
-                });
-                services.AddSingleton(provider =>
-                {
-                    var myocytes = new List<Myocyte>();
-                    services.AddSingleton(provider =>
-                    {
-                        var myocytes = new List<Myocyte>();
-                        for (int i = 0; i < _numberOfCells; i++)
-                        {
-                            myocytes.Add(new Myocyte());
-                        }
 
-                        return myocytes;
-                    });
-                    return myocytes;
-                });
+                // Redis
+                services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost: 6379"));
+                services.AddSingleton<IRedisCacheService, RedisCacheService>();
+                services.AddHostedService<CellCachePopulatorService<Myocyte>>();
+                services.AddHostedService<BloodCachePopulatorService>();
+
+                // RabbitMQ
+                services.AddHostedService<MessageConsumer<Blood>>();
                 services.AddSingleton(provider =>
                 {
                     return new MessagePublisher<Blood>("lungs");
                 });
-                services.AddScoped<HeartBloodProducerWorker>();
-                services.AddHostedService<BloodCachePopulatorService>();
-                services.AddScoped<BloodDiffusionWorker<Myocyte>>();
+
+                // Quartz
                 services.AddQuartz(q =>
                 {
-                    q.ScheduleJob<HeartBloodProducerWorker>(trigger => trigger
+                    q.ScheduleJob<BloodProducerJob>(trigger => trigger
                     .StartNow()
                     .WithSimpleSchedule(x => x
                         .WithIntervalInSeconds(5)
                         .RepeatForever()));
 
-                    q.ScheduleJob<BloodDiffusionWorker<Myocyte>>(trigger => trigger
-                    .StartNow()
-                    .WithSimpleSchedule(x => x
-                        .WithIntervalInSeconds(5)
-                        .RepeatForever()));
-
-                    q.ScheduleJob<BloodProducerWorker>(trigger => trigger
+                    q.ScheduleJob<BloodDiffusionJob<Myocyte>>(trigger => trigger
                     .StartNow()
                     .WithSimpleSchedule(x => x
                         .WithIntervalInSeconds(5)
                         .RepeatForever()));
                 });
-                services.AddQuartzHostedService();
-
             });
     }
 }
