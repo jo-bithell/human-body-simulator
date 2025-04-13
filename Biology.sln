@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeftAtrium", "LeftAtrium\LeftAtrium.csproj", "{5865EF8D-91FD-455D-927F-4247302A146B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{D63C30AD-4ACF-46E7-980A-E9318A648FBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{5865EF8D-91FD-455D-927F-4247302A146B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5865EF8D-91FD-455D-927F-4247302A146B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5865EF8D-91FD-455D-927F-4247302A146B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
