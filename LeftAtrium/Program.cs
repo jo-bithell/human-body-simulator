@@ -51,6 +51,7 @@ namespace LeftAtrium
                         .WithIntervalInSeconds(5)
                         .RepeatForever()));
                 });
+                services.AddQuartzHostedService();
             });
     }
 }

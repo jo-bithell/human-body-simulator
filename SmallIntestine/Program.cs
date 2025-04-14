@@ -40,6 +40,7 @@ namespace SmallIntestine
                 {
                     return new MessagePublisher<Blood>("right-atrium");
                 });
+
                 // Quartz
                 services.AddQuartz(q =>
                 {
@@ -67,6 +68,7 @@ namespace SmallIntestine
                         .WithIntervalInSeconds(5)
                         .RepeatForever()));
                 });
+                services.AddQuartzHostedService();
             });
     }
 }

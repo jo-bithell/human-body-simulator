@@ -59,6 +59,7 @@ namespace Mouth
                     .WithIntervalInSeconds(5)
                     .RepeatForever()));
             });
+            services.AddQuartzHostedService();
         });
     }
 }

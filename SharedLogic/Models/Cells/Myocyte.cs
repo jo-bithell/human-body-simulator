@@ -8,7 +8,6 @@
             {
                 Console.WriteLine("ATP count insufficient, performing respiration.");
                 Respire();
-                Console.WriteLine("ATP restored.");
             }
 
             ATPCount -= atpThreshold;

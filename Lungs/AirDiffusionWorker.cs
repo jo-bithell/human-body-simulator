@@ -30,6 +30,8 @@ namespace Lungs
                 var serializedCell = JsonSerializer.Serialize(cell);
                 await _cacheService.SetAsync(key, serializedCell);
             }
+
+            Console.WriteLine("Air diffused into alveolar cells");
             await Task.CompletedTask;
         }
     }

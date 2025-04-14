@@ -54,6 +54,7 @@ namespace RightAtrium
                         .WithIntervalInSeconds(5)
                         .RepeatForever()));
                 });
+                services.AddQuartzHostedService();
             });
     }
 }

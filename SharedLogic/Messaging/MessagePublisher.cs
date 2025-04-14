@@ -37,6 +37,8 @@ namespace SharedLogic.Messaging
             var body = Encoding.UTF8.GetBytes(serializedMessage);
 
             _channel.BasicPublish(string.Empty, routingKey: _routingKey, body: body);
+
+            Console.WriteLine($"Published message");
         }
     }
 }

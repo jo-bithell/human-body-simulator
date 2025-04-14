@@ -21,6 +21,8 @@ namespace SharedLogic.Services
                 var serializedCell = JsonSerializer.Serialize(Activator.CreateInstance<Cell>());
                 await _cacheService.SetAsync($"{_projectCalledFrom}-{typeof(Cell).Name.ToLower()}-{i.ToString()}", serializedCell);
             }
+
+            Console.WriteLine($"Populated cache with {typeof(Cell).Name} cells");
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

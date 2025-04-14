@@ -54,5 +54,6 @@ class Program
                     .WithIntervalInSeconds(5)
                     .RepeatForever()));
             });
+            services.AddQuartzHostedService();
         });
 }

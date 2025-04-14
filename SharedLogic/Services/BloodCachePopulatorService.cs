@@ -21,6 +21,7 @@ namespace SharedLogic.Services
                 _bloodCache.Queue.Enqueue(newBlood);
             }
 
+            Console.WriteLine("Blood cache populated");
             await Task.CompletedTask;
         }
 

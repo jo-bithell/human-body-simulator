@@ -3,16 +3,16 @@ using SharedLogic.Respiration;
 
 namespace SharedLogic.Services
 {
-    public class RespirationService
+    internal class RespirationService
     {
         private Cell _cell;
 
-        public RespirationService(Cell cell)
+        internal RespirationService(Cell cell)
         {
             _cell = cell;
         }
 
-        public void PerformRespiration()
+        internal void PerformRespiration()
         {
             GetProcessorForRespiration().Process();
             Console.WriteLine("Performed respiration.");

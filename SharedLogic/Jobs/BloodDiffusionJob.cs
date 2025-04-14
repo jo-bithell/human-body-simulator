@@ -28,6 +28,8 @@ namespace SharedLogic
                 _bloodCacheCache.Queue.Enqueue(blood);
             }
 
+            Console.WriteLine("Blood diffused nutrients");
+
             await Task.CompletedTask;
         }
 

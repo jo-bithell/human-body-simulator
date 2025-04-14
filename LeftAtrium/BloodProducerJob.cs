@@ -2,25 +2,27 @@
 using SharedLogic.Messaging;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
+using SharedLogic.Services;
+using System.Text.Json;
 
 namespace LeftAtrium
 {
-    internal class BloodProducerJob : IJob
+    public class BloodProducerJob : IJob
     {
         private readonly SnapshotCache<Blood> _bloodCache;
-        private readonly List<Myocyte> _myocytes;
+        private readonly IRedisCacheService _cacheService;
         private readonly int _pumpCapacity = 100;
         private readonly int _atpThreshold = 5;
 
-        internal BloodProducerJob(SnapshotCache<Blood> bloodCache, List<Myocyte> heartCells)
+        public BloodProducerJob(SnapshotCache<Blood> bloodCache, IRedisCacheService cacheService)
         {
             _bloodCache = bloodCache;
-            _myocytes = heartCells;
+            _cacheService = cacheService;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
-            PerformMotion();
+            await PerformMotion();
 
             for (int i = 0; i < _pumpCapacity; i ++)
             {
@@ -37,12 +39,20 @@ namespace LeftAtrium
             await Task.CompletedTask;
         }
 
-        private void PerformMotion()
+        private async Task PerformMotion()
         {
-            foreach (Myocyte myocyte in _myocytes)
+            for (int i = 0; i < 5; i++)
             {
-                myocyte.PerformMotion(_atpThreshold);
-                Console.WriteLine("Heart cell performed motion");
+                var key = $"left-atrium-{nameof(Myocyte)}-{i.ToString()}";
+                var cell = await _cacheService.GetAsync<Myocyte>(key);
+
+                if (cell != null)
+                {
+                    cell.PerformMotion(_atpThreshold);
+
+                    var serializedCell = JsonSerializer.Serialize(cell);
+                    await _cacheService.SetAsync(key, serializedCell);
+                }
             }
         }
 
