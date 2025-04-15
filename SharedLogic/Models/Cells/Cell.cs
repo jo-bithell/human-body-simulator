@@ -1,5 +1,4 @@
-﻿using SharedLogic.Diffusion;
-using SharedLogic.Respiration;
+﻿using SharedLogic.Respiration;
 
 namespace SharedLogic.Models.Cells
 {
@@ -20,11 +19,8 @@ namespace SharedLogic.Models.Cells
             respirationService.PerformRespiration();
         }
 
-        public void DiffuseNutrientsFromBlood(Blood incomingBlood)
-        {
-            var diffusionService = new DiffusionService(this);
-            diffusionService.DiffuseNutrientsFromBlood(incomingBlood);
-        }
+        public int GetDefaultConcentration()
+            => _defaultConcentration;
 
         public bool ConcentrationHigherInCell(int concentrationInsideCell, int concentrationOutsideCell)
             => concentrationInsideCell > _defaultConcentration && concentrationOutsideCell < _defaultConcentration;

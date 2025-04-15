@@ -7,8 +7,8 @@ using SharedLogic;
 using SharedLogic.Messaging;
 using StackExchange.Redis;
 using SharedLogic.Redis;
-using SharedLogic.Diffusion;
 using SharedLogic.Digestion;
+using SharedLogic.Diffusion.Blood;
 
 namespace RightAtrium
 {

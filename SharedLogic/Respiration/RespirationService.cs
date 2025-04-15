@@ -17,7 +17,7 @@ namespace SharedLogic.Respiration
             Console.WriteLine("Performed respiration.");
         }
 
-        private BaseRespiration GetProcessorForRespiration()
+        private IBaseRespirationService GetProcessorForRespiration()
         {
             if (_cell.GlucoseCount > 0 && _cell.OxygenCount > 0)
             {

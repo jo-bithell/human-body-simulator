@@ -4,7 +4,7 @@ using SharedLogic.Models.Cells;
 using SharedLogic.Redis;
 using System.Text.Json;
 
-namespace Lungs
+namespace SharedLogic.Diffusion
 {
     internal class BreathingJob : IJob
     {

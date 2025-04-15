@@ -6,7 +6,7 @@ namespace SharedLogic.Models.Cells
     {
         public void DiffuseNutrientsFromAir(Air air)
         {
-            var diffusionService = new DiffusionService(this);
+            var diffusionService = new IDiffusionService(this);
             diffusionService.DiffuseNutrientsFromAir(air);
         }
     }

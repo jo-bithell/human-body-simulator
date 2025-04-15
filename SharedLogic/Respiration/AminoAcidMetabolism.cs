@@ -1,6 +1,6 @@
 ﻿namespace SharedLogic.Respiration
 {
-    internal class AminoAcidMetabolism : BaseRespiration
+    internal class AminoAcidMetabolism : IBaseRespirationService
     {
     }
 }

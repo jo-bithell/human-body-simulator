@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using SharedLogic;
-using SharedLogic.Diffusion;
+using SharedLogic.Diffusion.Blood;
 using SharedLogic.Digestion;
 using SharedLogic.Messaging;
 using SharedLogic.Models;

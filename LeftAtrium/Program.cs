@@ -6,7 +6,7 @@ using SharedLogic.Models.Cells;
 using Quartz;
 using StackExchange.Redis;
 using SharedLogic.Redis;
-using SharedLogic.Diffusion;
+using SharedLogic.Diffusion.Blood;
 
 namespace LeftAtrium
 {

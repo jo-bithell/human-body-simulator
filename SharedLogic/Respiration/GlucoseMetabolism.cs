@@ -2,7 +2,7 @@
 
 namespace SharedLogic.Respiration
 {
-    internal class AerobicGlucoseMetabolism : BaseRespiration
+    internal class AerobicGlucoseMetabolism : IBaseRespirationService
     {
         private Cell _cell;
         internal AerobicGlucoseMetabolism(Cell cell)

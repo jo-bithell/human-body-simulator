@@ -1,14 +1,13 @@
 ﻿using SharedLogic.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Lungs;
 using SharedLogic.Models.Cells;
 using Quartz;
 using SharedLogic;
 using SharedLogic.Messaging;
 using StackExchange.Redis;
 using SharedLogic.Redis;
-using SharedLogic.Diffusion;
+using SharedLogic.Diffusion.Blood;
 class Program
 {
     static void Main(string[] args)

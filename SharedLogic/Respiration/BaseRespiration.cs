@@ -1,6 +1,6 @@
 ﻿namespace SharedLogic.Respiration
 {
-    public interface BaseRespiration
+    public interface IBaseRespirationService
     {
         virtual void Process() { }
     }
