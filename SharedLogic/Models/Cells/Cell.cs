@@ -24,5 +24,8 @@ namespace SharedLogic.Models.Cells
             var diffusionService = new DiffusionService(this);
             diffusionService.DiffuseNutrients(incomingBlood);
         }
+
+        public bool ConcentrationHigherInCell(int concentrationInsideCell, int concentrationOutsideCell)
+            => concentrationInsideCell > _defaultConcentration && concentrationOutsideCell < _defaultConcentration;
     }
 }

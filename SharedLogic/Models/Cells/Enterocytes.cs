@@ -4,12 +4,6 @@ namespace SharedLogic.Models.Cells
 {
     public class Enterocyte : Cell
     {
-        private readonly DiffusionService _diffusionService;
-        public Enterocyte()
-        {
-            _diffusionService = new DiffusionService(this);
-        }
-
         public void DiffuseNutrients(int glucoseCount)
         {
             DiffuseGlucose(glucoseCount);
@@ -17,13 +11,13 @@ namespace SharedLogic.Models.Cells
 
         private void DiffuseGlucose(int glucoseCount)
         {
-            while (!_diffusionService.ConcentrationHigherInCell(GlucoseCount, glucoseCount))
+            while (!ConcentrationHigherInCell(GlucoseCount, glucoseCount))
             {
                 GlucoseCount += 1;
                 glucoseCount -= 1;
             }       
 
-            while (_diffusionService.ConcentrationHigherInCell(GlucoseCount, glucoseCount))
+            while (ConcentrationHigherInCell(GlucoseCount, glucoseCount))
             {
                 GlucoseCount -= 1;
                 glucoseCount += 1;

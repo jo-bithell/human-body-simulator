@@ -4,12 +4,6 @@ namespace SharedLogic.Models.Cells
 {
     public class AlveolarCell : Cell
     {
-        private readonly DiffusionService _diffusionService;
-        public AlveolarCell()
-        {
-            _diffusionService = new DiffusionService(this);
-        }
-
         public void DiffuseGases(Air incomingAir)
         {
             // Can't simulate diffusion completely due to air having different local concentrations of gases
@@ -19,13 +13,13 @@ namespace SharedLogic.Models.Cells
 
         private void DiffuseCarbonDioxide(Air incomingAir)
         {
-            while (!_diffusionService.ConcentrationHigherInCell(CarbonDioxideCount, incomingAir.CarbonDioxideCount))
+            while (!ConcentrationHigherInCell(CarbonDioxideCount, incomingAir.CarbonDioxideCount))
             {
                 CarbonDioxideCount += 1;
                 incomingAir.CarbonDioxideCount -= 1;
             }
 
-            while (_diffusionService.ConcentrationHigherInCell(CarbonDioxideCount, incomingAir.CarbonDioxideCount))
+            while (ConcentrationHigherInCell(CarbonDioxideCount, incomingAir.CarbonDioxideCount))
             {
                 CarbonDioxideCount -= 1;
                 incomingAir.CarbonDioxideCount += 1;
@@ -34,13 +28,13 @@ namespace SharedLogic.Models.Cells
 
         private void DiffuseOxygen(Air incomingAir)
         {
-            while (!_diffusionService.ConcentrationHigherInCell(OxygenCount, incomingAir.OxygenCount))
+            while (!ConcentrationHigherInCell(OxygenCount, incomingAir.OxygenCount))
             {
                 OxygenCount += 1;
                 incomingAir.OxygenCount -= 1;
             }
 
-            while (_diffusionService.ConcentrationHigherInCell(OxygenCount, incomingAir.OxygenCount))
+            while (ConcentrationHigherInCell(OxygenCount, incomingAir.OxygenCount))
             {
                 OxygenCount -= 1;
                 incomingAir.OxygenCount += 1;

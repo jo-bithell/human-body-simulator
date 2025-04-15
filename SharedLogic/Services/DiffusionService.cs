@@ -25,18 +25,15 @@ namespace SharedLogic.Services
             Console.WriteLine("Nutrients diffused");
         }
 
-        public bool ConcentrationHigherInCell(int concentrationInsideCell, int concentrationOutsideCell)
-            => concentrationInsideCell > 10 && concentrationOutsideCell < 10;
-
         private void DiffuseWater(Blood incomingBlood)
         {
-            while (!ConcentrationHigherInCell(_cell.WaterCount, incomingBlood.WaterCount))
+            while (!_cell.ConcentrationHigherInCell(_cell.WaterCount, incomingBlood.WaterCount))
             {
                 _cell.WaterCount += 1;
                 incomingBlood.WaterCount -= 1;
             }
 
-            while (ConcentrationHigherInCell(_cell.WaterCount, incomingBlood.WaterCount))
+            while (_cell.ConcentrationHigherInCell(_cell.WaterCount, incomingBlood.WaterCount))
             {
                 _cell.WaterCount -= 1;
                 incomingBlood.WaterCount += 1;
@@ -45,13 +42,13 @@ namespace SharedLogic.Services
 
         private void DiffuseGlucose(Blood incomingBlood)
         {
-            while (!ConcentrationHigherInCell(_cell.GlucoseCount, incomingBlood.GlucoseCount))
+            while (!_cell.ConcentrationHigherInCell(_cell.GlucoseCount, incomingBlood.GlucoseCount))
             {
                 _cell.GlucoseCount += 1;
                 incomingBlood.GlucoseCount -= 1;
             }
 
-            while (ConcentrationHigherInCell(_cell.GlucoseCount, incomingBlood.GlucoseCount))
+            while (_cell.ConcentrationHigherInCell(_cell.GlucoseCount, incomingBlood.GlucoseCount))
             {
                 _cell.GlucoseCount -= 1;
                 incomingBlood.GlucoseCount += 1;
@@ -60,13 +57,13 @@ namespace SharedLogic.Services
 
         private void DiffuseOxygen(Blood incomingBlood)
         {
-            while (!ConcentrationHigherInCell(_cell.OxygenCount, incomingBlood.OxygenCount))
+            while (!_cell.ConcentrationHigherInCell(_cell.OxygenCount, incomingBlood.OxygenCount))
             {
                 _cell.OxygenCount += 1;
                 incomingBlood.OxygenCount -= 1;
             }
 
-            while (ConcentrationHigherInCell(_cell.OxygenCount, incomingBlood.OxygenCount))
+            while (_cell.ConcentrationHigherInCell(_cell.OxygenCount, incomingBlood.OxygenCount))
             {
                 _cell.OxygenCount -= 1;
                 incomingBlood.OxygenCount += 1;
@@ -75,13 +72,13 @@ namespace SharedLogic.Services
 
         private void DiffuseCarbonDioxide(Blood incomingBlood)
         {
-            while (!ConcentrationHigherInCell(_cell.CarbonDioxideCount, incomingBlood.CarbonDioxideCount))
+            while (!_cell.ConcentrationHigherInCell(_cell.CarbonDioxideCount, incomingBlood.CarbonDioxideCount))
             {
                 _cell.CarbonDioxideCount += 1;
                 incomingBlood.CarbonDioxideCount -= 1;
             }
 
-            while (ConcentrationHigherInCell(_cell.CarbonDioxideCount, incomingBlood.CarbonDioxideCount))
+            while (_cell.ConcentrationHigherInCell(_cell.CarbonDioxideCount, incomingBlood.CarbonDioxideCount))
             {
                 _cell.CarbonDioxideCount -= 1;
                 incomingBlood.CarbonDioxideCount += 1;
