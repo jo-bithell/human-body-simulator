@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Mouth\Mouth.csproj" />
     <ProjectReference Include="..\SharedLogic\SharedLogic.csproj" />
   </ItemGroup>
 

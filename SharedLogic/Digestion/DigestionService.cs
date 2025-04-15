@@ -1,18 +1,20 @@
 ﻿using SharedLogic.Models.Cells;
-using SharedLogic.Services;
+using SharedLogic.Redis;
 using System.Text.Json;
 
-namespace CsvCommon
+namespace SharedLogic.Digestion
 {
-    public abstract class BaseCsvService : IBaseCsvService
+    public abstract class DigestionService
     {
+        public string OutputDirectory { get; set; }
         private readonly int _atpThreshold = 5;
         private readonly IRedisCacheService _cacheService;
-        private readonly string _projectCalledFrom;
-        public BaseCsvService(IRedisCacheService cacheService, string projectCalledFrom)
+        private readonly string _organName;
+        public DigestionService(IRedisCacheService cacheService, string organName, string outputDirectory)
         {
             _cacheService = cacheService;
-            _projectCalledFrom = projectCalledFrom;
+            _organName = organName;
+            OutputDirectory = outputDirectory;
         }
 
         public List<string[]> ReadCsvFile(string filePath)
@@ -35,7 +37,7 @@ namespace CsvCommon
             return records;
         }
 
-        public virtual async Task DigestFood(List<string[]> records, string outputDirectory) => await Task.CompletedTask;
+        public abstract Task DigestFood(List<string[]> records);
 
         public void WriteCsvFile(string filePath, List<string[]> records)
         {
@@ -52,7 +54,7 @@ namespace CsvCommon
         {
             for (int i = 0; i < 5; i++)
             {
-                var key = $"{_projectCalledFrom}-{nameof(Myocyte)}-{i.ToString()}";
+                var key = $"{_organName}-{nameof(Myocyte)}-{i.ToString()}";
                 var cell = await _cacheService.GetAsync<Myocyte>(key);
 
                 if (cell != null)

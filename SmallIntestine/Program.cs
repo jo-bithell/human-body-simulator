@@ -5,8 +5,10 @@ using SharedLogic;
 using SharedLogic.Models.Cells;
 using Quartz;
 using SharedLogic.Messaging;
-using SharedLogic.Services;
 using StackExchange.Redis;
+using SharedLogic.Redis;
+using SharedLogic.Diffusion;
+using SharedLogic.Digestion;
 
 namespace SmallIntestine
 {
@@ -36,10 +38,7 @@ namespace SmallIntestine
 
                 // RabbitMQ
                 services.AddHostedService<MessageConsumer<Blood>>();
-                services.AddSingleton(provider =>
-                {
-                    return new MessagePublisher<Blood>("right-atrium");
-                });
+                services.AddSingleton<MessagePublisherFactory>();
 
                 // Quartz
                 services.AddQuartz(q =>
@@ -62,7 +61,7 @@ namespace SmallIntestine
                         .WithIntervalInSeconds(5)
                         .RepeatForever()));
 
-                    q.ScheduleJob<CsvJob<ChemicalDigestionService>>(trigger => trigger
+                    q.ScheduleJob<DigestionJob>(trigger => trigger
                     .StartNow()
                     .WithSimpleSchedule(x => x
                         .WithIntervalInSeconds(5)

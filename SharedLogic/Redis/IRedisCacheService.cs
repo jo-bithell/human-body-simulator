@@ -1,4 +1,4 @@
-﻿namespace SharedLogic.Services
+﻿namespace SharedLogic.Redis
 {
     public interface IRedisCacheService
     {

@@ -2,7 +2,7 @@
 using SharedLogic.Messaging;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
-using SharedLogic.Services;
+using SharedLogic.Redis;
 using System.Text.Json;
 
 namespace LeftAtrium

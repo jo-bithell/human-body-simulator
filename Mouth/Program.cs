@@ -2,19 +2,19 @@
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using SharedLogic;
+using SharedLogic.Diffusion;
+using SharedLogic.Digestion;
 using SharedLogic.Messaging;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
-using SharedLogic.Services;
+using SharedLogic.Models.Enums;
+using SharedLogic.Redis;
 using StackExchange.Redis;
 
 namespace Mouth
 {
     class Program
     {
-        // move to appsettings
-        private static string _inputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input"));
-        private static string _outputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "Stomach", "input"));
         static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -27,7 +27,7 @@ namespace Mouth
             // Core services
             services.AddSingleton("mouth");
             services.AddSingleton<SnapshotCache<Blood>>();
-            services.AddSingleton<MechanicalDigestionService>();
+            services.AddSingleton<DigestionServiceFactory>();
 
             // Redis
             services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost: 6379"));
@@ -36,7 +36,7 @@ namespace Mouth
 
             // RabbitMQ
             services.AddHostedService<MessageConsumer<Blood>>();
-            services.AddSingleton(provider => new MessagePublisher<Blood>("right-atrium"));
+            services.AddSingleton<MessagePublisherFactory>();
 
             // Quartz
             services.AddQuartz(q =>
@@ -53,7 +53,7 @@ namespace Mouth
                     .WithIntervalInSeconds(5)
                     .RepeatForever()));
 
-                q.ScheduleJob< CsvJob<MechanicalDigestionService>> (trigger => trigger
+                q.ScheduleJob<DigestionJob> (trigger => trigger
                 .StartNow()
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(5)

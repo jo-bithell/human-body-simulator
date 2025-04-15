@@ -1,7 +1,6 @@
 ﻿using SharedLogic.Models.Cells;
-using SharedLogic.Respiration;
 
-namespace SharedLogic.Services
+namespace SharedLogic.Respiration
 {
     internal class RespirationService
     {
@@ -36,7 +35,7 @@ namespace SharedLogic.Services
                 return new AminoAcidMetabolism();
             }
 
-            return new BaseRespiration();
+            throw new InvalidOperationException("Unsupported respiration type.");
         }
     }
 }

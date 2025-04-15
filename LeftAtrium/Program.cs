@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SharedLogic;
 using SharedLogic.Messaging;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
 using Quartz;
-using SharedLogic.Services;
 using StackExchange.Redis;
+using SharedLogic.Redis;
+using SharedLogic.Diffusion;
 
 namespace LeftAtrium
 {

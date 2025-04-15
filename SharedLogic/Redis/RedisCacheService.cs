@@ -1,7 +1,7 @@
 ﻿using StackExchange.Redis;
 using System.Text.Json;
 
-namespace SharedLogic.Services
+namespace SharedLogic.Redis
 {
     public class RedisCacheService : IRedisCacheService
     {

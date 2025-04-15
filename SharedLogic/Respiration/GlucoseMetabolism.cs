@@ -2,15 +2,15 @@
 
 namespace SharedLogic.Respiration
 {
-    public class AerobicGlucoseMetabolism : BaseRespiration
+    internal class AerobicGlucoseMetabolism : BaseRespiration
     {
         private Cell _cell;
-        public AerobicGlucoseMetabolism(Cell cell)
+        internal AerobicGlucoseMetabolism(Cell cell)
         {
             _cell = cell;
         }
 
-        public override void Process()
+        internal void Process()
         {
             PerformGlycolysis();
             PerformKrebsCycle();

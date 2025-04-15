@@ -9,9 +9,9 @@ namespace SharedLogic
         private readonly MessagePublisher<Blood> _producerService;
         private readonly SnapshotCache<Blood> _bloodCacheCache;
 
-        public BloodProducerJob(MessagePublisher<Blood> producerService, SnapshotCache<Blood> bloodCache)
+        public BloodProducerJob(MessagePublisherFactory messagePublisherFactory, SnapshotCache<Blood> bloodCache)
         {
-            _producerService = producerService;
+            _producerService = messagePublisherFactory.CreateBloodMessagePublisher();
             _bloodCacheCache = bloodCache;
         }
 

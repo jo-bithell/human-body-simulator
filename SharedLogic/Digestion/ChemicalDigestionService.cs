@@ -1,23 +1,22 @@
-﻿using CsvCommon;
-using SharedLogic.Enums;
-using SharedLogic.Models.Cells;
-using SharedLogic.Services;
+﻿using SharedLogic.Models.Cells;
+using SharedLogic.Models.Enums;
+using SharedLogic.Redis;
 using System.Text.Json;
 
-namespace SmallIntestine
+namespace SharedLogic.Digestion
 {
-    public class ChemicalDigestionService : BaseCsvService
+    public class ChemicalDigestionService : DigestionService
     {
         private readonly IRedisCacheService _cacheService;
-        private readonly string _projectCalledFrom;
-        public ChemicalDigestionService(IRedisCacheService cacheService, string projectCalledFrom)
-            : base(cacheService, projectCalledFrom)
+        private readonly string _organName;
+        public ChemicalDigestionService(IRedisCacheService cacheService, string organName, string outputDirectory)
+            : base(cacheService, organName, outputDirectory)
         {
             _cacheService = cacheService;
-            _projectCalledFrom = projectCalledFrom;
+            _organName = organName;
         }
 
-        public override async Task DigestFood(List<string[]> inputArray, string outputDirectory)
+        public override async Task DigestFood(List<string[]> inputArray)
         {
             if (inputArray.Count == 0)
                 return;
@@ -51,10 +50,10 @@ namespace SmallIntestine
         {
             for (int i = 0; i < 5; i++)
             {
-                var key = $"{_projectCalledFrom}-{nameof(Enterocyte)}-{i.ToString()}";
+                var key = $"{_organName}-{nameof(Enterocyte)}-{i.ToString()}";
                 var cell = await _cacheService.GetAsync<Enterocyte>(key);
-                if (cell != null)
-                    cell.DiffuseNutrients(glucoseCount);
+                //if (cell != null)
+                //    cell.DiffuseNutrientsFromBlood(glucoseCount);
                 var serializedCell = JsonSerializer.Serialize(cell);
                 await _cacheService.SetAsync(key, serializedCell);
             }

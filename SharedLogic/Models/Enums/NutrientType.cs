@@ -1,4 +1,4 @@
-﻿namespace SharedLogic.Enums
+﻿namespace SharedLogic.Models.Enums
 {
     public enum NutrientType
     {

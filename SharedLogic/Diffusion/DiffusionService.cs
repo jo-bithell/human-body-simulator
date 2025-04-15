@@ -1,7 +1,7 @@
 ﻿using SharedLogic.Models;
 using SharedLogic.Models.Cells;
 
-namespace SharedLogic.Services
+namespace SharedLogic.Diffusion
 {
     internal class DiffusionService
     {
@@ -12,7 +12,7 @@ namespace SharedLogic.Services
             _cell = cell;
         }
 
-        public void DiffuseNutrients(Blood incomingBlood)
+        internal void DiffuseNutrientsFromBlood(Blood incomingBlood)
         {
             Console.WriteLine("Diffusing nutrients");
 
@@ -23,6 +23,13 @@ namespace SharedLogic.Services
             DiffuseWater(incomingBlood);
 
             Console.WriteLine("Nutrients diffused");
+        }
+
+        internal void DiffuseNutrientsFromAir(Air incomingAir)
+        {
+            // Can't simulate diffusion completely due to air having different local concentrations of gases
+            DiffuseCarbonDioxide(incomingAir);
+            DiffuseOxygen(incomingAir);
         }
 
         private void DiffuseWater(Blood incomingBlood)
@@ -82,6 +89,36 @@ namespace SharedLogic.Services
             {
                 _cell.CarbonDioxideCount -= 1;
                 incomingBlood.CarbonDioxideCount += 1;
+            }
+        }
+
+        private void DiffuseCarbonDioxide(Air incomingAir)
+        {
+            while (!_cell.ConcentrationHigherInCell(_cell.CarbonDioxideCount, incomingAir.CarbonDioxideCount))
+            {
+                _cell.CarbonDioxideCount += 1;
+                incomingAir.CarbonDioxideCount -= 1;
+            }
+
+            while (_cell.ConcentrationHigherInCell(_cell.CarbonDioxideCount, incomingAir.CarbonDioxideCount))
+            {
+                _cell.CarbonDioxideCount -= 1;
+                incomingAir.CarbonDioxideCount += 1;
+            }
+        }
+
+        private void DiffuseOxygen(Air incomingAir)
+        {
+            while (!_cell.ConcentrationHigherInCell(_cell.OxygenCount, incomingAir.OxygenCount))
+            {
+                _cell.OxygenCount += 1;
+                incomingAir.OxygenCount -= 1;
+            }
+
+            while (_cell.ConcentrationHigherInCell(_cell.OxygenCount, incomingAir.OxygenCount))
+            {
+                _cell.OxygenCount -= 1;
+                incomingAir.OxygenCount += 1;
             }
         }
     }

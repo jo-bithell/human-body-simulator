@@ -2,7 +2,7 @@
 using SharedLogic.Messaging;
 using SharedLogic.Models;
 
-namespace SharedLogic.Services
+namespace SharedLogic.Redis
 {
     public class BloodCachePopulatorService: IHostedService
     {

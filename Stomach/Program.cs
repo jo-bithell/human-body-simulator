@@ -5,12 +5,13 @@ using SharedLogic.Models.Cells;
 using Quartz;
 using SharedLogic;
 using SharedLogic.Messaging;
-using SharedLogic.Services;
 using StackExchange.Redis;
+using SharedLogic.Redis;
+using SharedLogic.Diffusion;
+using SharedLogic.Digestion;
 
 class Program
 {
-    private static int _digestionChunkSize = 10;
     private static string _inputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input"));
     private static string _outputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "LargeIntestine", "input"));
     static void Main(string[] args)
@@ -34,10 +35,7 @@ class Program
 
             // RabbitMQ
             services.AddHostedService<MessageConsumer<Blood>>();
-            services.AddSingleton(provider =>
-            {
-                return new MessagePublisher<Blood>("right-atrium");
-            });
+            services.AddSingleton<MessagePublisherFactory>();
 
             // Quartz
             services.AddQuartz(q =>

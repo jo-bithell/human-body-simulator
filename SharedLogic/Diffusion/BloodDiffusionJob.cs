@@ -2,10 +2,10 @@
 using SharedLogic.Messaging;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
-using SharedLogic.Services;
+using SharedLogic.Redis;
 using System.Text.Json;
 
-namespace SharedLogic
+namespace SharedLogic.Diffusion
 {
     public class BloodDiffusionJob<C> : IJob where C : Cell
     {
@@ -28,8 +28,6 @@ namespace SharedLogic
                 _bloodCacheCache.Queue.Enqueue(blood);
             }
 
-            Console.WriteLine("Blood diffused nutrients");
-
             await Task.CompletedTask;
         }
 
@@ -41,7 +39,7 @@ namespace SharedLogic
                 var cell = await _cacheService.GetAsync<C>(key);
 
                 if (cell != null)
-                    cell.DiffuseNutrients(blood);
+                    cell.DiffuseNutrientsFromBlood(blood);
 
                 var serializedCell = JsonSerializer.Serialize(cell);
                 await _cacheService.SetAsync(key, serializedCell);

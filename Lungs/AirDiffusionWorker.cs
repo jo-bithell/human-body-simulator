@@ -1,7 +1,7 @@
 ﻿using Quartz;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
-using SharedLogic.Services;
+using SharedLogic.Redis;
 using System.Text.Json;
 
 namespace Lungs
@@ -25,7 +25,7 @@ namespace Lungs
                 var cell = await _cacheService.GetAsync<AlveolarCell>(key);
 
                 if (cell != null)
-                    cell.DiffuseGases(_air);
+                    cell.DiffuseNutrientsFromAir(_air);
 
                 var serializedCell = JsonSerializer.Serialize(cell);
                 await _cacheService.SetAsync(key, serializedCell);

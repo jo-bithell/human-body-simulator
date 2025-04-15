@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using System.Text.Json;
 
-namespace SharedLogic.Services
+namespace SharedLogic.Redis
 {
     public class CellCachePopulatorService<Cell>: IHostedService
     {

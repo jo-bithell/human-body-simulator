@@ -6,8 +6,9 @@ using SharedLogic.Models.Cells;
 using Quartz;
 using SharedLogic;
 using SharedLogic.Messaging;
-using SharedLogic.Services;
 using StackExchange.Redis;
+using SharedLogic.Redis;
+using SharedLogic.Diffusion;
 class Program
 {
     static void Main(string[] args)
@@ -32,7 +33,7 @@ class Program
 
                 // RabbitMQ
                 services.AddHostedService<MessageConsumer<Blood>>();
-                services.AddSingleton(provider => new MessagePublisher<Blood>("left-atrium"));
+                services.AddSingleton<MessagePublisherFactory>();
 
                 // Quartz job scheduling
                 services.AddQuartz(q =>

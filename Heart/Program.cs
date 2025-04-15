@@ -5,8 +5,10 @@ using SharedLogic.Models.Cells;
 using Quartz;
 using SharedLogic;
 using SharedLogic.Messaging;
-using SharedLogic.Services;
 using StackExchange.Redis;
+using SharedLogic.Redis;
+using SharedLogic.Diffusion;
+using SharedLogic.Digestion;
 
 namespace RightAtrium
 {
@@ -34,10 +36,7 @@ namespace RightAtrium
 
                 // RabbitMQ
                 services.AddHostedService<MessageConsumer<Blood>>();
-                services.AddSingleton(provider =>
-                {
-                    return new MessagePublisher<Blood>("lungs");
-                });
+                services.AddSingleton<MessagePublisherFactory>();
 
                 // Quartz
                 services.AddQuartz(q =>
@@ -54,7 +53,6 @@ namespace RightAtrium
                         .WithIntervalInSeconds(5)
                         .RepeatForever()));
                 });
-                services.AddQuartzHostedService();
             });
     }
 }

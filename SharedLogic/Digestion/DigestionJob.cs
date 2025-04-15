@@ -1,30 +1,25 @@
-﻿using CsvCommon;
-using Quartz;
+﻿using Quartz;
 
-namespace SharedLogic
+namespace SharedLogic.Digestion
 {
-    public class CsvJob<C> : IJob where C : BaseCsvService
+    public class DigestionJob : IJob
     {
-        private readonly C _csvService;
-        private string _inputDirectory;
-        private string _outputDirectory;
+        private readonly DigestionService _csvService;
 
-        public CsvJob(C csvService, string inputDirectory, string outputDirectory)
+        public DigestionJob(DigestionServiceFactory digestionServiceFactory)
         {
-            _csvService = csvService;
-            _inputDirectory = inputDirectory;
-            _outputDirectory = outputDirectory;
+            _csvService = digestionServiceFactory.Create();
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
-            foreach (var filePath in Directory.GetFiles(_inputDirectory, $"*.csv"))
+            foreach (var filePath in Directory.GetFiles(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input")), $"*.csv"))
             {
                 if (File.Exists(filePath))
                 {
                     Console.WriteLine("Received csv");
                     var records = _csvService.ReadCsvFile(filePath);
-                    await _csvService.DigestFood(records, _outputDirectory);
+                    await _csvService.DigestFood(records);
                     Console.WriteLine("Sent csv");
                     //File.Delete(filePath); // Delete the file after reading
                 }
