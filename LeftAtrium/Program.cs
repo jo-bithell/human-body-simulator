@@ -6,7 +6,7 @@ using SharedLogic.Models.Cells;
 using Quartz;
 using StackExchange.Redis;
 using SharedLogic.Redis;
-using SharedLogic.Diffusion.Blood;
+using SharedLogic.Diffusion;
 
 namespace LeftAtrium
 {
@@ -45,7 +45,7 @@ namespace LeftAtrium
                         .WithIntervalInSeconds(5)
                         .RepeatForever()));
 
-                    q.ScheduleJob<BloodDiffusionJob<Myocyte>>(trigger => trigger
+                    q.ScheduleJob<DiffusionJob<Myocyte>>(trigger => trigger
                     .StartNow()
                     .WithSimpleSchedule(x => x
                         .WithIntervalInSeconds(5)

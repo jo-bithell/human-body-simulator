@@ -6,7 +6,7 @@ namespace SharedLogic.Digestion
     {
         private readonly string _organName;
         private readonly IRedisCacheService _cacheService;
-        private static readonly Dictionary<string, string> OrganFileRoutingMap = new()
+        private static readonly Dictionary<string, string> _organFileRoutingMap = new()
         {
             { "mouth", GetOutputDirectory("Stomach") },
             { "stomach", GetOutputDirectory("SmallIntestine") },
@@ -20,7 +20,7 @@ namespace SharedLogic.Digestion
 
         public DigestionService Create()
         {
-            if (OrganFileRoutingMap.TryGetValue(_organName, out var outputDirectory))
+            if (_organFileRoutingMap.TryGetValue(_organName, out var outputDirectory))
             {
                 if (_organName == "mouth" || _organName == "stomach")
                 {

@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace SharedLogic.Diffusion
 {
-    internal class BreathingJob : IJob
+    public class BreathingJob : IJob
     {
         private readonly int _atpThreshold = 5;
         private readonly IRedisCacheService _cacheService;

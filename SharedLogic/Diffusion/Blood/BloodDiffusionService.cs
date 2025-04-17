@@ -1,88 +1,117 @@
-﻿using SharedLogic.Models;
+﻿using SharedLogic.Messaging;
+using SharedLogic.Models;
 using SharedLogic.Models.Cells;
+using SharedLogic.Redis;
+using System.Text.Json;
 
 namespace SharedLogic.Diffusion
 {
-    public class BloodDiffusionService : IDiffusionService
+    public class BloodDiffusionService<C> : IDiffusionService where C : Cell
     {
-        private Cell _cell;
-        private Blood _blood;
-        public BloodDiffusionService(Cell cell, Blood blood)
+        private readonly SnapshotCache<Blood> _bloodCache;
+        private readonly IRedisCacheService _cacheService;
+        private readonly string _organName;
+        public BloodDiffusionService(SnapshotCache<Blood> bloodCache, IRedisCacheService cacheService, string organName)
         {
-            _cell = cell;
-            _blood = blood;
+            _bloodCache = bloodCache;
+            _cacheService = cacheService;
+            _organName = organName;
         }
 
-        public void Diffuse()
+        public async Task Diffuse()
         {
-            Console.WriteLine("Diffusing nutrients");
+            while (_bloodCache.Queue.TryDequeue(out var blood))
+            {
+                Console.WriteLine("Diffusing nutrients");
 
+                await DiffuseNutrientsFromBlood(blood);
+                _bloodCache.Queue.Enqueue(blood);
+
+                Console.WriteLine("Nutrients diffused");
+            }
+        }
+
+        private async Task DiffuseNutrientsFromBlood(Blood blood)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                var key = $"{_organName}-{typeof(C).Name.ToLower()}-{i.ToString()}";
+                var cell = await _cacheService.GetAsync<C>(key);
+
+                if (cell != null)
+                    PerformDiffusionBetweenBloodAndCell(blood, cell);
+
+                var serializedCell = JsonSerializer.Serialize(cell);
+                await _cacheService.SetAsync(key, serializedCell);
+            }
+        }
+
+        private void PerformDiffusionBetweenBloodAndCell(Blood blood, C cell)
+        {
             // Can't simulate diffusion completely due to blood having different local concentrations of nutrients
-            DiffuseCarbonDioxide();
-            DiffuseGlucose();
-            DiffuseOxygen();
-            DiffuseWater();
-
-            Console.WriteLine("Nutrients diffused");
+            DiffuseCarbonDioxide(blood, cell);
+            DiffuseGlucose(blood, cell);
+            DiffuseOxygen(blood, cell);
+            DiffuseWater(blood, cell);
         }
 
-        private void DiffuseWater()
+        private void DiffuseWater(Blood blood, C cell)
         {
-            while (!_cell.ConcentrationHigherInCell(_cell.WaterCount, _blood.WaterCount))
+            while (!cell.ConcentrationHigherInCell(cell.WaterCount, cell.WaterCount))
             {
-                _cell.WaterCount += 1;
-                _blood.WaterCount -= 1;
+                cell.WaterCount += 1;
+                blood.WaterCount -= 1;
             }
 
-            while (_cell.ConcentrationHigherInCell(_cell.WaterCount, _blood.WaterCount))
+            while (cell.ConcentrationHigherInCell(cell.WaterCount, blood.WaterCount))
             {
-                _cell.WaterCount -= 1;
-                _blood.WaterCount += 1;
-            }
-        }
-
-        private void DiffuseGlucose()
-        {
-            while (!_cell.ConcentrationHigherInCell(_cell.GlucoseCount, _blood.GlucoseCount))
-            {
-                _cell.GlucoseCount += 1;
-                _blood.GlucoseCount -= 1;
-            }
-
-            while (_cell.ConcentrationHigherInCell(_cell.GlucoseCount, _blood.GlucoseCount))
-            {
-                _cell.GlucoseCount -= 1;
-                _blood.GlucoseCount += 1;
+                cell.WaterCount -= 1;
+                blood.WaterCount += 1;
             }
         }
 
-        private void DiffuseOxygen()
+        private void DiffuseGlucose(Blood blood, C cell)
         {
-            while (!_cell.ConcentrationHigherInCell(_cell.OxygenCount, _blood.OxygenCount))
+            while (!cell.ConcentrationHigherInCell(cell.GlucoseCount, blood.GlucoseCount))
             {
-                _cell.OxygenCount += 1;
-                _blood.OxygenCount -= 1;
+                cell.GlucoseCount += 1;
+                blood.GlucoseCount -= 1;
             }
 
-            while (_cell.ConcentrationHigherInCell(_cell.OxygenCount, _blood.OxygenCount))
+            while (cell.ConcentrationHigherInCell(cell.GlucoseCount, blood.GlucoseCount))
             {
-                _cell.OxygenCount -= 1;
-                _blood.OxygenCount += 1;
+                cell.GlucoseCount -= 1;
+                blood.GlucoseCount += 1;
             }
         }
 
-        private void DiffuseCarbonDioxide()
+        private void DiffuseOxygen(Blood blood, C cell)
         {
-            while (!_cell.ConcentrationHigherInCell(_cell.CarbonDioxideCount, _blood.CarbonDioxideCount))
+            while (!cell.ConcentrationHigherInCell(cell.OxygenCount, blood.OxygenCount))
             {
-                _cell.CarbonDioxideCount += 1;
-                _blood.CarbonDioxideCount -= 1;
+                cell.OxygenCount += 1;
+                blood.OxygenCount -= 1;
             }
 
-            while (_cell.ConcentrationHigherInCell(_cell.CarbonDioxideCount, _blood.CarbonDioxideCount))
+            while (cell.ConcentrationHigherInCell(cell.OxygenCount, blood.OxygenCount))
             {
-                _cell.CarbonDioxideCount -= 1;
-                _blood.CarbonDioxideCount += 1;
+                cell.OxygenCount -= 1;
+                blood.OxygenCount += 1;
+            }
+        }
+
+        private void DiffuseCarbonDioxide(Blood blood, C cell)
+        {
+            while (!cell.ConcentrationHigherInCell(cell.CarbonDioxideCount, blood.CarbonDioxideCount))
+            {
+                cell.CarbonDioxideCount += 1;
+                blood.CarbonDioxideCount -= 1;
+            }
+
+            while (cell.ConcentrationHigherInCell(cell.CarbonDioxideCount, blood.CarbonDioxideCount))
+            {
+                cell.CarbonDioxideCount -= 1;
+                blood.CarbonDioxideCount += 1;
             }
         }
     }

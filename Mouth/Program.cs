@@ -2,12 +2,11 @@
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using SharedLogic;
-using SharedLogic.Diffusion.Blood;
+using SharedLogic.Diffusion;
 using SharedLogic.Digestion;
 using SharedLogic.Messaging;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
-using SharedLogic.Models.Enums;
 using SharedLogic.Redis;
 using StackExchange.Redis;
 
@@ -41,7 +40,7 @@ namespace Mouth
             // Quartz
             services.AddQuartz(q =>
             {
-                q.ScheduleJob<BloodDiffusionJob<Myocyte>>(trigger => trigger
+                q.ScheduleJob<DiffusionJob<Myocyte>>(trigger => trigger
                 .StartNow()
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(5)

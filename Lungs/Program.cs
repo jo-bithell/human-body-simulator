@@ -7,7 +7,7 @@ using SharedLogic;
 using SharedLogic.Messaging;
 using StackExchange.Redis;
 using SharedLogic.Redis;
-using SharedLogic.Diffusion.Blood;
+using SharedLogic.Diffusion;
 class Program
 {
     static void Main(string[] args)
@@ -43,13 +43,13 @@ class Program
                             .WithIntervalInSeconds(5)
                             .RepeatForever()));
 
-                    q.ScheduleJob<BloodDiffusionJob<Myocyte>>(trigger => trigger
+                    q.ScheduleJob<DiffusionJob<Myocyte>>(trigger => trigger
                         .StartNow()
                         .WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(5)
                             .RepeatForever()));
 
-                    q.ScheduleJob<BloodDiffusionJob<AlveolarCell>>(trigger => trigger
+                    q.ScheduleJob<DiffusionJob<AlveolarCell>>(trigger => trigger
                         .StartNow()
                         .WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(5)

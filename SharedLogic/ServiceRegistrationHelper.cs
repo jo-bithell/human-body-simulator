@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Quartz;
-using SharedLogic.Diffusion.Blood;
+using SharedLogic.Diffusion;
 using SharedLogic.Messaging;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
@@ -20,7 +20,7 @@ namespace SharedLogic
         {
             services.AddQuartz(q =>
             {
-                q.ScheduleJob<BloodDiffusionJob<Myocyte>>(trigger => trigger
+                q.ScheduleJob<DiffusionJob<Myocyte>>(trigger => trigger
                 .StartNow()
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(5)

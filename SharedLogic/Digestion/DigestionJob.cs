@@ -5,6 +5,7 @@ namespace SharedLogic.Digestion
     public class DigestionJob : IJob
     {
         private readonly DigestionService _csvService;
+        private readonly string _currentFilePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input"));
 
         public DigestionJob(DigestionServiceFactory digestionServiceFactory)
         {
@@ -13,7 +14,7 @@ namespace SharedLogic.Digestion
 
         public async Task Execute(IJobExecutionContext context)
         {
-            foreach (var filePath in Directory.GetFiles(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input")), $"*.csv"))
+            foreach (var filePath in Directory.GetFiles(_currentFilePath, $"*.csv"))
             {
                 if (File.Exists(filePath))
                 {

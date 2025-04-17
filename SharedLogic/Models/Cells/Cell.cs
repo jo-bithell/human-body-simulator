@@ -2,7 +2,7 @@
 
 namespace SharedLogic.Models.Cells
 {
-    public class Cell
+    public class Cell : ICell
     {
         private static readonly int _defaultConcentration = 10;
         internal int ATPCount { get; set; } = _defaultConcentration;

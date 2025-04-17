@@ -8,7 +8,7 @@ using SharedLogic.Messaging;
 using StackExchange.Redis;
 using SharedLogic.Redis;
 using SharedLogic.Digestion;
-using SharedLogic.Diffusion.Blood;
+using SharedLogic.Diffusion;
 
 class Program
 {
@@ -40,7 +40,7 @@ class Program
             // Quartz
             services.AddQuartz(q =>
             {
-                q.ScheduleJob<BloodDiffusionJob<Myocyte>>(trigger => trigger
+                q.ScheduleJob<DiffusionJob<Myocyte>>(trigger => trigger
                 .StartNow()
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(5)
