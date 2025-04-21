@@ -61,7 +61,7 @@ namespace SharedLogic
 
         private static void RegisterCommonRedisServices(IServiceCollection services)
         {
-            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost: 6379"));
+            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("host.docker.internal: 6379"));
             services.AddSingleton<IRedisCacheService, RedisCacheService>();
         }
 

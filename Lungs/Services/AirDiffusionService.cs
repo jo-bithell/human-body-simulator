@@ -20,7 +20,7 @@ namespace Lungs.Services
 
         public async Task DiffuseAsync()
         {
-            await CacheHelper.PerformFunctionOnCellAsync(_organName, _cacheService, async (AlveolarCell cell) =>
+            await CacheHelper.PerformFunctionAsync(_organName, _cacheService, async (AlveolarCell cell) =>
             {
                 DiffuseFromAir(cell);
                 await Task.CompletedTask;

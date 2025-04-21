@@ -1,13 +1,15 @@
 ﻿using SharedLogic.Digestion.Services;
 using SharedLogic.Caching.Services.Interfaces;
+using SharedLogic.Respiration.Services.Interfaces;
+using SharedLogic.Respiration.Factories;
 
 namespace Mouth.Services
 {
     internal class MouthDigestionService : DigestionService
     {
         private readonly string OutputDirectory = GetOutputDirectory("Stomach");
-        public MouthDigestionService(IRedisCacheService cacheService, string organName)
-            : base(cacheService, organName)
+        public MouthDigestionService(IRedisCacheService cacheService, string organName, IRespirationServiceFactory respirationServiceFactory)
+            : base(cacheService, organName, respirationServiceFactory)
         {
         }
 
@@ -17,13 +19,13 @@ namespace Mouth.Services
             
             await DigestFoodAsync(async records =>
             {
-                await PerformDigestionAsync(records);
+               PerformDigestion(records);
             });
         }
 
-        private async Task PerformDigestionAsync(IEnumerable<string[]> records)
+        private void PerformDigestion(IEnumerable<string[]> records)
         {
-            await PerformMotionAsync();
+            PerformMotion();
             DivideFoodIntoChunks(records);
         }
 

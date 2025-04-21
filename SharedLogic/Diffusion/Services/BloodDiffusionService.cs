@@ -34,7 +34,7 @@ namespace SharedLogic.Diffusion.Services
 
         private async Task DiffuseNutrientsFromBlood(Blood blood)
         {
-            await CacheHelper.PerformFunctionOnCellAsync(_organName, _cacheService, async (C c) =>
+            await CacheHelper.PerformFunctionAsync(_organName, _cacheService, async (C c) =>
             {
                 PerformDiffusionBetweenBloodAndCell(blood, c);
                 await Task.CompletedTask;

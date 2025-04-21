@@ -25,7 +25,7 @@ namespace SmallIntestine.Services
 
         private async Task PerformDigestionAsync(IEnumerable<string[]> records)
         {
-            await PerformMotionAsync();
+            await PerformMotion();
             await ConvertCsvsToFoodAsync(records);
         }
 

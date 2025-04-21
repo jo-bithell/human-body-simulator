@@ -28,7 +28,7 @@ namespace Lungs.Services
         private async Task PerformMotionAsync()
         {
             var organName = "lungs";
-            await CacheHelper.PerformFunctionOnCellAsync(organName, _cacheService, async (Myocyte cell) =>
+            await CacheHelper.PerformFunctionAsync(organName, _cacheService, async (Myocyte cell) =>
             {
                 cell.PerformMotion(_atpThreshold);
                 await Task.CompletedTask;

@@ -2,19 +2,19 @@
 using SharedLogic.Caching.Services;
 using SharedLogic.Caching.Services.Interfaces;
 using SharedLogic.Digestion.Services.Interfaces;
+using SharedLogic.Respiration.Services.Interfaces;
+using SharedLogic.Respiration.Factories;
+using SharedLogic.Respiration.Services;
 
 namespace SharedLogic.Digestion.Services
 {
     public abstract class DigestionService : IDigestionService
     {
         public readonly static string InputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input"));
-        private readonly int _atpThreshold = 5;
-        private readonly IRedisCacheService _cacheService;
-        private readonly string _organName;
-        public DigestionService(IRedisCacheService cacheService, string organName)
+        private readonly IRespirationService _respirationService;
+        public DigestionService(IRedisCacheService cacheService, string organName, IRespirationServiceFactory respirationServiceFactory)
         {
-            _cacheService = cacheService;
-            _organName = organName;
+            _respirationService = respirationServiceFactory.GetServiceForRespiration().GetAwaiter().GetResult();
         }
 
         public abstract Task DigestAsync();
@@ -64,13 +64,9 @@ namespace SharedLogic.Digestion.Services
             }
         }
 
-        public virtual async Task PerformMotionAsync()
+        public virtual void PerformMotion()
         {
-            await CacheHelper.PerformFunctionOnCellAsync(_organName, _cacheService, async (Myocyte cell) =>
-            {
-                cell.PerformMotion(_atpThreshold);
-                await Task.CompletedTask;
-            });
+            _respirationService.Process();
         }
 
         public static string GetOutputDirectory(string organ)

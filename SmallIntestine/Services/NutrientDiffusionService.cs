@@ -1,6 +1,7 @@
 ﻿using SharedLogic.Models.Cells;
 using SharedLogic.Caching.Services;
 using SharedLogic.Caching.Services.Interfaces;
+using SmallIntestine.Models;
 
 namespace SmallIntestine.Services
 {
@@ -17,7 +18,7 @@ namespace SmallIntestine.Services
 
         internal async Task DiffuseGlucoseAsync(int glucoseCount)
         {
-            await CacheHelper.PerformFunctionOnCellAsync(_organName, _cacheService, async (Enterocyte cell) =>
+            await CacheHelper.PerformFunctionAsync(_organName, _cacheService, async (Enterocyte cell) =>
             {
                 // perform function
                 await Task.CompletedTask;

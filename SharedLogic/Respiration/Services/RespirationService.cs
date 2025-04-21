@@ -5,38 +5,17 @@ namespace SharedLogic.Respiration.Services
 {
     internal class RespirationService
     {
-        private Cell _cell;
+        private readonly IRespirationService _metaboliser;
 
-        internal RespirationService(Cell cell)
+        internal RespirationService(IRespirationService metaboliser)
         {
-            _cell = cell;
+            _metaboliser = metaboliser;
         }
 
         internal void PerformRespiration()
         {
-            GetProcessorForRespiration().Process();
+            _metaboliser.Process();
             Console.WriteLine("Performed respiration.");
-        }
-
-        private IBaseRespirationService GetProcessorForRespiration()
-        {
-            if (_cell.GlucoseCount > 0 && _cell.OxygenCount > 0)
-            {
-                Console.WriteLine("Aerobic glucose metabolism selected.");
-                return new AerobicGlucoseMetabolism(_cell);
-            }
-
-            if (_cell.FattyAcidsCount > 0)
-            {
-                return new FattyAcidMetaboliser();
-            }
-
-            if (_cell.AminoAcidsCount > 0)
-            {
-                return new AminoAcidMetaboliser();
-            }
-
-            throw new InvalidOperationException("Unsupported respiration type.");
         }
     }
 }

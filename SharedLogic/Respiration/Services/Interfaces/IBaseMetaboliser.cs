@@ -1,7 +1,7 @@
 ﻿namespace SharedLogic.Respiration.Services.Interfaces
 {
-    public interface IBaseRespirationService
+    public interface IRespirationService
     {
-        virtual void Process() { }
+        void Process();
     }
 }

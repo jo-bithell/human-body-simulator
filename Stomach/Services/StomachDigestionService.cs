@@ -23,7 +23,7 @@ namespace Stomach.Services
 
         private async Task PerformDigestionAsync(IEnumerable<string[]> records)
         {
-            await PerformMotionAsync();
+            await PerformMotion();
             DivideFoodIntoChunks(records);
         }
 

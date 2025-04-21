@@ -6,7 +6,7 @@ namespace SharedLogic.Caching.Services
 {
     public static class CacheHelper
     {
-        public static async Task PerformFunctionOnCellAsync<C>(string organName, IRedisCacheService cacheService, Func<C, Task> function) where C : Cell
+        public static async Task PerformFunctionAsync<C>(string organName, IRedisCacheService cacheService, Func<C, Task> function) where C : Cell
         {
             var cell = await GetCellFromCacheAsync<C>(organName, cacheService);
 
@@ -21,18 +21,18 @@ namespace SharedLogic.Caching.Services
             }
         }
 
+        public static async Task<C?> GetCellFromCacheAsync<C>(string organName, IRedisCacheService cacheService) where C : Cell
+        {
+            var key = GetCacheKey(organName, typeof(C).Name.ToLower());
+            var cellJson = await cacheService.GetAsync<string>(key);
+            return cellJson != null ? JsonSerializer.Deserialize<C>(cellJson) : null;
+        }
+
         public static async Task SetCellToCacheAsync<C>(string organName, C cell, IRedisCacheService cacheService, TimeSpan? expiry = null) where C : Cell
         {
             var key = GetCacheKey(organName, typeof(C).Name.ToLower());
             var cellJson = JsonSerializer.Serialize(cell);
             await cacheService.SetAsync(key, cellJson, expiry);
-        }
-
-        private static async Task<C?> GetCellFromCacheAsync<C>(string organName, IRedisCacheService cacheService) where C : Cell
-        {
-            var key = GetCacheKey(organName, typeof(C).Name.ToLower());
-            var cellJson = await cacheService.GetAsync<string>(key);
-            return cellJson != null ? JsonSerializer.Deserialize<C>(cellJson) : null;
         }
 
         private static string GetCacheKey(string organName, string cell)

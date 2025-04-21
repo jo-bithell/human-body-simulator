@@ -3,7 +3,7 @@ using SharedLogic.Respiration.Services.Interfaces;
 
 namespace SharedLogic.Respiration.Services
 {
-    internal class AerobicGlucoseMetabolism : IBaseRespirationService
+    internal class AerobicGlucoseMetabolism : IRespirationService
     {
         private Cell _cell;
         internal AerobicGlucoseMetabolism(Cell cell)
@@ -11,11 +11,12 @@ namespace SharedLogic.Respiration.Services
             _cell = cell;
         }
 
-        internal void Process()
+        public void Process()
         {
             PerformGlycolysis();
             PerformKrebsCycle();
             PerformElectronTransportChain();
+            //Write back to cache here.
         }
 
         //Cytoplasm

@@ -5,6 +5,7 @@ using SharedLogic.Models.Cells;
 using Quartz;
 using SharedLogic.Digestion.Services.Interfaces;
 using SmallIntestine.Services;
+using SmallIntestine.Models;
 
 namespace SmallIntestine
 {

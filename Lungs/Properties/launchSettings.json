@@ -2,6 +2,9 @@
   "profiles": {
     "Lungs": {
       "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
     }
   }
 }
