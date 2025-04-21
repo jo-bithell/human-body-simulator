@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Messaging\BloodProducerJob.cs" />
+    <None Include="Messaging\Jobs\BloodProducerJob.cs" />
   </ItemGroup>
 
   <ItemGroup>

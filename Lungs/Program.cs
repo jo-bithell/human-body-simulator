@@ -4,10 +4,10 @@ using Microsoft.Extensions.Hosting;
 using SharedLogic.Models.Cells;
 using Quartz;
 using SharedLogic;
-using SharedLogic.Messaging;
-using StackExchange.Redis;
-using SharedLogic.Redis;
-using SharedLogic.Diffusion;
+using Lungs.Services;
+using Lungs.Services.Interfaces;
+using Lungs.Jobs;
+using Lungs.Models;
 class Program
 {
     static void Main(string[] args)
@@ -15,58 +15,23 @@ class Program
         CreateHostBuilder(args).Build().Run();
     }
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
+    static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
-                // Core services
-                services.AddSingleton("lungs");
-                services.AddSingleton<SnapshotCache<Blood>>();
+                ServiceRegistrationHelper.RegisterCommonServices("lungs", services);
+                ServiceRegistrationHelper.RegisterServicesForCell<AlveolarCell>(services);
+
                 services.AddSingleton<Air>();
-
-                // Redis
-                services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost: 6379"));
-                services.AddSingleton<IRedisCacheService, RedisCacheService>();
-                services.AddHostedService<CellCachePopulatorService<Myocyte>>();
-                services.AddHostedService<CellCachePopulatorService<AlveolarCell>>();
-
-                // RabbitMQ
-                services.AddHostedService<MessageConsumer<Blood>>();
-                services.AddSingleton<MessagePublisherFactory>();
-
-                // Quartz job scheduling
+                services.AddScoped<IOxygenAirRefreshService, OxygenAirRefreshService>();
+                services.AddScoped<OxygenAirRefreshJob>();
                 services.AddQuartz(q =>
                 {
-                    q.ScheduleJob<BloodProducerJob>(trigger => trigger
-                        .StartNow()
-                        .WithSimpleSchedule(x => x
-                            .WithIntervalInSeconds(5)
-                            .RepeatForever()));
-
-                    q.ScheduleJob<DiffusionJob<Myocyte>>(trigger => trigger
-                        .StartNow()
-                        .WithSimpleSchedule(x => x
-                            .WithIntervalInSeconds(5)
-                            .RepeatForever()));
-
-                    q.ScheduleJob<DiffusionJob<AlveolarCell>>(trigger => trigger
-                        .StartNow()
-                        .WithSimpleSchedule(x => x
-                            .WithIntervalInSeconds(5)
-                            .RepeatForever()));
-
-                    q.ScheduleJob<BreathingJob>(trigger => trigger
-                        .StartNow()
-                        .WithSimpleSchedule(x => x
-                            .WithIntervalInSeconds(5)
-                            .RepeatForever()));
-
-                    q.ScheduleJob<AirDiffusionJob>(trigger => trigger
+                    q.ScheduleJob<OxygenAirRefreshJob>(trigger => trigger
                         .StartNow()
                         .WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(5)
                             .RepeatForever()));
                 });
-                services.AddQuartzHostedService();
             });
 }

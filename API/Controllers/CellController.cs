@@ -15,7 +15,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{key}")]
-        public async Task<IActionResult> Get(string key)
+        public async Task<IActionResult> GetAsync(string key)
         {
             var db = _redis.GetDatabase();
             var value = await db.StringGetAsync(key);
@@ -29,7 +29,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] KeyValuePair<string, string> data)
+        public async Task<IActionResult> PostAsync([FromBody] KeyValuePair<string, string> data)
         {
             var db = _redis.GetDatabase();
             bool isSet = await db.StringSetAsync(data.Key, data.Value);
@@ -43,7 +43,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{key}")]
-        public async Task<IActionResult> Delete(string key)
+        public async Task<IActionResult> DeleteAsync(string key)
         {
             var db = _redis.GetDatabase();
             bool isDeleted = await db.KeyDeleteAsync(key);
