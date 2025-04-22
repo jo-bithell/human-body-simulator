@@ -24,6 +24,12 @@ namespace Stomach.Services
 
         private async Task PerformDigestionAsync(IEnumerable<string[]> records)
         {
+            if (!await CanPerformDigestion(_atpThreshold))
+            {
+                Console.WriteLine("Insufficient ATP to perform digestion");
+                return;
+            }
+
             await PerformMotion(_atpThreshold);
             DivideFoodIntoChunks(records);
         }

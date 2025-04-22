@@ -18,22 +18,25 @@ namespace SharedLogic.Caching.Services
         {
             var cell = await GetCellFromCacheAsync();
 
-            if (cell != null)
-            {
-                await function(cell);
-                await SetCellToCacheAsync(cell);
-            }
-            else
-            {
-                throw new InvalidOperationException($"Cell not found in cache for organ: {_organName}");
-            }
+            await function(cell);
+            await SetCellToCacheAsync(cell);
         }
 
-        public async Task<C?> GetCellFromCacheAsync()
+        public async Task<bool> CellHasSufficientATP(int atpThreshold)
+        {
+            var cell = await GetCellFromCacheAsync();
+            return cell.ATPCount >= atpThreshold;
+        }
+
+        public async Task<C> GetCellFromCacheAsync()
         {
             var key = GetCacheKey(_organName, typeof(C).Name.ToLower());
             var cellJson = await _cacheService.GetAsync<string>(key);
-            return cellJson != null ? JsonSerializer.Deserialize<C>(cellJson) : null;
+
+            if (cellJson == null)
+                throw new InvalidOperationException($"Cell not found in cache for organ: {_organName}");
+
+            return JsonSerializer.Deserialize<C>(cellJson)!;
         }
 
         public async Task SetCellToCacheAsync(C cell)

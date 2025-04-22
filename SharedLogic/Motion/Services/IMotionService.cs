@@ -3,5 +3,6 @@
     public interface IMotionService
     {
         Task PerformMotionAsync(int atpThreshold);
+        Task<bool> CanPerformMotionAsync(int atpThreshold);
     }
 }

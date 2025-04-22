@@ -48,7 +48,7 @@ namespace SharedLogic.Digestion.Services
             }
         }
 
-        public void WriteCsvFile(string filePath, List<string[]> records)
+        public void WriteCsvFile(string filePath, IEnumerable<string[]> records)
         {
             using (var writer = new StreamWriter(filePath))
             {
@@ -57,6 +57,11 @@ namespace SharedLogic.Digestion.Services
                     writer.WriteLine(string.Join(",", record));
                 }
             }
+        }
+
+        public async Task<bool> CanPerformDigestion(int atpThreshold)
+        {
+            return await _motionService.CanPerformMotionAsync(atpThreshold);
         }
 
         public virtual async Task PerformMotion(int atpThreshold)

@@ -18,8 +18,15 @@ namespace Lungs.Services
 
         public async Task PerformMotionAndRefreshAirAsync()
         {
+            if (!await _motionService.CanPerformMotionAsync(_atpThreshold))
+            {
+                Console.WriteLine("Insufficient ATP to refresh air in lungs.");
+                return;
+            }
+
             await _motionService.PerformMotionAsync(_atpThreshold);
             RefreshAirInLungs();
+            Console.WriteLine("Refreshed air in lungs.");
         }
 
         private void RefreshAirInLungs()

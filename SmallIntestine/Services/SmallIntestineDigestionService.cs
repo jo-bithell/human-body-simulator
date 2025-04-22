@@ -18,6 +18,7 @@ namespace SmallIntestine.Services
         public override async Task DigestAsync()
         {
             EnsureDirectoriesExists(OutputDirectory);
+
             await DigestFoodAsync(async records =>
             {
                 await PerformDigestionAsync(records);
@@ -26,6 +27,12 @@ namespace SmallIntestine.Services
 
         private async Task PerformDigestionAsync(IEnumerable<string[]> records)
         {
+            if (!await CanPerformDigestion(_atpThreshold))
+            {
+                Console.WriteLine("Insufficient ATP to perform digestion");
+                return;
+            }
+
             await PerformMotion(_atpThreshold);
             await ConvertCsvsToFoodAsync(records);
         }

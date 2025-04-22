@@ -12,6 +12,11 @@ namespace SharedLogic.Motion
             _cacheManagementService = cacheManagementService;
         }
 
+        public async Task<bool> CanPerformMotionAsync(int atpThreshold)
+        {
+            return await _cacheManagementService.CellHasSufficientATP(atpThreshold);
+        }
+
         public async Task PerformMotionAsync(int atpThreshold)
         {
             await _cacheManagementService.PerformFunctionAsync(async (cell) =>
