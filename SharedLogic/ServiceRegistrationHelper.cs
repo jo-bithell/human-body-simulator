@@ -14,7 +14,10 @@ using SharedLogic.Caching.Services;
 using SharedLogic.Caching.Services.Interfaces;
 using SharedLogic.Motion.Services;
 using SharedLogic.Motion;
-using SharedLogic.Diffusion.Services.Interfaces;
+using SharedLogic.Respiration.Factories;
+using SharedLogic.Respiration.Jobs;
+using SharedLogic.Respiration.Services.Interfaces;
+using SharedLogic.Respiration.Services;
 
 namespace SharedLogic
 {
@@ -33,7 +36,18 @@ namespace SharedLogic
         {
             services.AddHostedService<CellCachePopulatorService<TCell>>();
             services.AddSingleton<ICacheManagementService<TCell>, CacheManagementService<TCell>>();
-            services.AddSingleton<IDiffusionService, BloodDiffusionService<TCell>>();
+            services.AddSingleton<IRespirationProcessorFactory<TCell>, RespirationProcessorFactory<TCell>>();
+            services.AddSingleton<IRespirationService<TCell>, RespirationService<TCell>>();
+            services.AddScoped<RespirationJob<TCell>>();
+            services.AddQuartz(q =>
+            {
+                q.ScheduleJob<RespirationJob<TCell>>(trigger => trigger
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(5)
+                    .RepeatForever()));
+            });
+            services.AddSingleton<BloodDiffusionService<TCell>>();
             services.AddScoped<BloodDiffusionJob<TCell>>();
             services.AddQuartz(q =>
             {
@@ -71,7 +85,7 @@ namespace SharedLogic
 
         private static void RegisterCommonRedisServices(IServiceCollection services)
         {
-            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("host.docker.internal: 6379"));
+            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost: 6801"));
             services.AddSingleton<IRedisCacheService, RedisCacheService>();
         }
 

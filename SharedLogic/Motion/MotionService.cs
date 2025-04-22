@@ -1,18 +1,14 @@
 ﻿using SharedLogic.Caching.Services.Interfaces;
 using SharedLogic.Models.Cells;
 using SharedLogic.Motion.Services;
-using SharedLogic.Respiration.Factories;
-using SharedLogic.Respiration.Services.Interfaces;
 
 namespace SharedLogic.Motion
 {
     public class MotionService : IMotionService
     {
-        private readonly IRespirationService _respirationService;
         private readonly ICacheManagementService<Myocyte> _cacheManagementService;
-        public MotionService(IRespirationServiceFactory respirationServiceFactory, ICacheManagementService<Myocyte> cacheManagementService)
+        public MotionService(ICacheManagementService<Myocyte> cacheManagementService)
         {
-            _respirationService = respirationServiceFactory.GetServiceForRespiration().GetAwaiter().GetResult();
             _cacheManagementService = cacheManagementService;
         }
 
@@ -20,20 +16,21 @@ namespace SharedLogic.Motion
         {
             await _cacheManagementService.PerformFunctionAsync(async (cell) =>
             {
-                PerformMotionAndRespire(cell, atpThreshold);
+                PerformMotion(cell, atpThreshold);
                 await Task.CompletedTask;
             });
         }
 
-        private void PerformMotionAndRespire(Myocyte myocyte, int atpThreshold)
+        private void PerformMotion(Myocyte myocyte, int atpThreshold)
         {
-            while (myocyte.ATPCount < atpThreshold)
+            if (myocyte.ATPCount < atpThreshold)
             {
-                Console.WriteLine("ATP count insufficient, performing respiration.");
-                _respirationService.Process();
+                Console.WriteLine("ATP count insufficient.");
+                return;
             }
 
-            myocyte.ATPCount -= atpThreshold;
+            myocyte.ATPCount = Math.Max(0, myocyte.ATPCount - atpThreshold);
+
             Console.WriteLine($"Motion performed, {atpThreshold} ATP consumed");
         }
     }

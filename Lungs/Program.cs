@@ -1,5 +1,4 @@
-﻿using SharedLogic.Models;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedLogic.Models.Cells;
 using Quartz;

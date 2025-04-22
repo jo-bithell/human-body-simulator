@@ -24,7 +24,6 @@ namespace SharedLogic
                 _producerService.SendMessage(blood);
             }
 
-            Console.WriteLine("Blood produced");
             await Task.CompletedTask;
         }
     }

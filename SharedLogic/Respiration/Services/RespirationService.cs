@@ -1,21 +1,34 @@
-﻿using SharedLogic.Respiration.Factories;
+﻿using SharedLogic.Caching.Services.Interfaces;
+using SharedLogic.Models.Cells;
+using SharedLogic.Respiration.Factories;
 using SharedLogic.Respiration.Services.Interfaces;
 
 namespace SharedLogic.Respiration.Services
 {
-    internal class RespirationService
+    internal class RespirationService<C> : IRespirationService<C> where C : Cell
     {
-        private readonly IRespirationService _respirationService;
-
-        internal RespirationService(IRespirationServiceFactory respirationServiceFactory)
+        private readonly ICacheManagementService<C> _cacheManagementService;
+        private readonly IRespirationProcessorFactory<C> _respirationProcessorFactory;
+        public RespirationService(IRespirationProcessorFactory<C> respirationProcessorFactory, ICacheManagementService<C> cacheManagementService)
         {
-            _respirationService = respirationServiceFactory.GetServiceForRespiration().GetAwaiter().GetResult();
+            _respirationProcessorFactory = respirationProcessorFactory;
+            _cacheManagementService = cacheManagementService;
         }
 
-        internal void PerformRespiration()
+        public async Task Process()
         {
-            _respirationService.Process();
-            Console.WriteLine("Performed respiration.");
+            await _cacheManagementService.PerformFunctionAsync(async (C c) =>
+            {
+                PerformRespiration(c);
+                await Task.CompletedTask;
+            });
+
+        }
+
+        private void PerformRespiration(C c)
+        {
+            var respirationProcessor = _respirationProcessorFactory.GetServiceForRespiration(c);
+            respirationProcessor.Process();
         }
     }
 }
