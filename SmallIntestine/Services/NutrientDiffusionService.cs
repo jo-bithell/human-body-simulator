@@ -1,24 +1,20 @@
-﻿using SharedLogic.Models.Cells;
-using SharedLogic.Caching.Services;
-using SharedLogic.Caching.Services.Interfaces;
+﻿using SharedLogic.Caching.Services.Interfaces;
 using SmallIntestine.Models;
 
 namespace SmallIntestine.Services
 {
     internal class NutrientDiffusionService
     {
-        private readonly IRedisCacheService _cacheService;
-        private readonly string _organName;
+        private readonly ICacheManagementService<Enterocyte> _cacheManagementService;
 
-        public NutrientDiffusionService(IRedisCacheService cacheService, string organName)
+        public NutrientDiffusionService(ICacheManagementService<Enterocyte> cacheManagementService)
         {
-            _cacheService = cacheService;
-            _organName = organName;
+            _cacheManagementService = cacheManagementService;
         }
 
         internal async Task DiffuseGlucoseAsync(int glucoseCount)
         {
-            await CacheHelper.PerformFunctionAsync(_organName, _cacheService, async (Enterocyte cell) =>
+            await _cacheManagementService.PerformFunctionAsync(async (Enterocyte cell) =>
             {
                 // perform function
                 await Task.CompletedTask;

@@ -1,13 +1,14 @@
 ﻿using SharedLogic.Digestion.Services;
-using SharedLogic.Caching.Services.Interfaces;
+using SharedLogic.Motion.Services;
 
 namespace Stomach.Services
 {
     internal class StomachDigestionService : DigestionService
     {
         private string OutputDirectory = GetOutputDirectory("SmallIntestine");
-        public StomachDigestionService(IRedisCacheService cacheService, string organName)
-            : base(cacheService, organName)
+        private int _atpThreshold = 5;
+        public StomachDigestionService(IMotionService motionService)
+            : base(motionService)
         {
         }
 
@@ -23,7 +24,7 @@ namespace Stomach.Services
 
         private async Task PerformDigestionAsync(IEnumerable<string[]> records)
         {
-            await PerformMotion();
+            await PerformMotion(_atpThreshold);
             DivideFoodIntoChunks(records);
         }
 

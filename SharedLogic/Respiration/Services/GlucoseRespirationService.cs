@@ -3,10 +3,10 @@ using SharedLogic.Respiration.Services.Interfaces;
 
 namespace SharedLogic.Respiration.Services
 {
-    internal class AerobicGlucoseMetabolism : IRespirationService
+    internal class GlucoseRespirationService : IRespirationService
     {
         private Cell _cell;
-        internal AerobicGlucoseMetabolism(Cell cell)
+        internal GlucoseRespirationService(Cell cell)
         {
             _cell = cell;
         }

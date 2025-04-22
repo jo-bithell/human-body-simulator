@@ -5,7 +5,7 @@
         IEnumerable<string[]> ReadCsvFile(string filePath);
         Task DigestFoodAsync(Func<IEnumerable<string[]>, Task> func);
         void WriteCsvFile(string filePath, List<string[]> records);
-        Task PerformMotionAsync();
+        Task PerformMotion(int atpThreshold);
         abstract Task DigestAsync();
     }
 }

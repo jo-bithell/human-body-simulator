@@ -1,6 +1,4 @@
-﻿using SharedLogic.Respiration.Services;
-
-namespace SharedLogic.Models.Cells
+﻿namespace SharedLogic.Models.Cells
 {
     public class Cell
     {
@@ -12,12 +10,6 @@ namespace SharedLogic.Models.Cells
         public int FattyAcidsCount { get; set; } = _defaultConcentration;
         public int WaterCount { get; set; } = _defaultConcentration;
         public int CarbonDioxideCount { get; set; } = _defaultConcentration;
-
-        public void Respire()
-        {
-            var respirationService = new RespirationService(this);
-            respirationService.PerformRespiration();
-        }
 
         public bool ConcentrationHigherInCell(int concentrationInsideCell, int concentrationOutsideCell)
             => concentrationInsideCell > _defaultConcentration && concentrationOutsideCell < _defaultConcentration;

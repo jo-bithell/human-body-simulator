@@ -1,15 +1,16 @@
 ﻿using SharedLogic.Digestion.Services;
 using SharedLogic.Models.Enums;
-using SharedLogic.Caching.Services.Interfaces;
+using SharedLogic.Motion.Services;
 
 namespace SmallIntestine.Services
 {
     internal class SmallIntestineDigestionService : DigestionService
     {
         private readonly NutrientDiffusionService _nutrientDiffusionService;
+        private readonly int _atpThreshold = 5;
         private readonly string OutputDirectory = GetOutputDirectory("LargeIntestine");
-        public SmallIntestineDigestionService(IRedisCacheService cacheService, string organName, NutrientDiffusionService nutrientDiffusionService)
-            : base(cacheService, organName)
+        public SmallIntestineDigestionService(IMotionService motionService, NutrientDiffusionService nutrientDiffusionService)
+            : base(motionService)
         {
             _nutrientDiffusionService = nutrientDiffusionService;
         }
@@ -25,7 +26,7 @@ namespace SmallIntestine.Services
 
         private async Task PerformDigestionAsync(IEnumerable<string[]> records)
         {
-            await PerformMotion();
+            await PerformMotion(_atpThreshold);
             await ConvertCsvsToFoodAsync(records);
         }
 

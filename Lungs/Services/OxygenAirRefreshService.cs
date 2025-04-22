@@ -1,38 +1,25 @@
-﻿using SharedLogic.Models.Cells;
-using SharedLogic.Models;
-using Lungs.Services.Interfaces;
+﻿using Lungs.Services.Interfaces;
 using Lungs.Models;
-using SharedLogic.Caching.Services;
-using SharedLogic.Caching.Services.Interfaces;
+using SharedLogic.Motion.Services;
 
 namespace Lungs.Services
 {
     internal class OxygenAirRefreshService : IOxygenAirRefreshService
     {
-        private readonly IRedisCacheService _cacheService;
-        private readonly int _atpThreshold = 5;
+        private readonly IMotionService _motionService;
         private readonly Air _air;
+        private readonly int _atpThreshold = 5;
 
-        public OxygenAirRefreshService(IRedisCacheService cacheService, Air air)
+        public OxygenAirRefreshService(Air air, IMotionService motionService)
         {
-            _cacheService = cacheService;
             _air = air;
+            _motionService = motionService;
         }
 
         public async Task PerformMotionAndRefreshAirAsync()
         {
-            await PerformMotionAsync();
+            await _motionService.PerformMotionAsync(_atpThreshold);
             RefreshAirInLungs();
-        }
-
-        private async Task PerformMotionAsync()
-        {
-            var organName = "lungs";
-            await CacheHelper.PerformFunctionAsync(organName, _cacheService, async (Myocyte cell) =>
-            {
-                cell.PerformMotion(_atpThreshold);
-                await Task.CompletedTask;
-            });
         }
 
         private void RefreshAirInLungs()

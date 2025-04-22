@@ -1,20 +1,20 @@
-﻿using SharedLogic.Models.Cells;
+﻿using SharedLogic.Respiration.Factories;
 using SharedLogic.Respiration.Services.Interfaces;
 
 namespace SharedLogic.Respiration.Services
 {
     internal class RespirationService
     {
-        private readonly IRespirationService _metaboliser;
+        private readonly IRespirationService _respirationService;
 
-        internal RespirationService(IRespirationService metaboliser)
+        internal RespirationService(IRespirationServiceFactory respirationServiceFactory)
         {
-            _metaboliser = metaboliser;
+            _respirationService = respirationServiceFactory.GetServiceForRespiration().GetAwaiter().GetResult();
         }
 
         internal void PerformRespiration()
         {
-            _metaboliser.Process();
+            _respirationService.Process();
             Console.WriteLine("Performed respiration.");
         }
     }

@@ -2,21 +2,18 @@
 using SharedLogic.Messaging.Models;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
-using SharedLogic.Caching.Services;
 using SharedLogic.Caching.Services.Interfaces;
 
 namespace SharedLogic.Diffusion.Services
 {
-    public class BloodDiffusionService<C> : DiffusionService where C : Cell
+    public class BloodDiffusionService<C> : IDiffusionService where C : Cell
     {
         private readonly SnapshotCache<Blood> _bloodCache;
-        private readonly IRedisCacheService _cacheService;
-        private readonly string _organName;
-        public BloodDiffusionService(SnapshotCache<Blood> bloodCache, IRedisCacheService cacheService, string organName)
+        private readonly ICacheManagementService<C> _cacheManagementService;
+        public BloodDiffusionService(SnapshotCache<Blood> bloodCache, ICacheManagementService<C> cacheManagementService)
         {
             _bloodCache = bloodCache;
-            _cacheService = cacheService;
-            _organName = organName;
+            _cacheManagementService = cacheManagementService;
         }
 
         public async Task DiffuseAsync()
@@ -34,7 +31,7 @@ namespace SharedLogic.Diffusion.Services
 
         private async Task DiffuseNutrientsFromBlood(Blood blood)
         {
-            await CacheHelper.PerformFunctionAsync(_organName, _cacheService, async (C c) =>
+            await _cacheManagementService.PerformFunctionAsync(async (C c) =>
             {
                 PerformDiffusionBetweenBloodAndCell(blood, c);
                 await Task.CompletedTask;

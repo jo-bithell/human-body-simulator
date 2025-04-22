@@ -12,6 +12,9 @@ using SharedLogic.Models.Cells;
 using StackExchange.Redis;
 using SharedLogic.Caching.Services;
 using SharedLogic.Caching.Services.Interfaces;
+using SharedLogic.Motion.Services;
+using SharedLogic.Motion;
+using SharedLogic.Diffusion.Services.Interfaces;
 
 namespace SharedLogic
 {
@@ -23,12 +26,14 @@ namespace SharedLogic
             RegisterCommonBloodMessagingServices(services);
             RegisterCommonRedisServices(services);
             RegisterServicesForCell<Myocyte>(services);
+            RegisterMotionService(services);
         }
 
         public static void RegisterServicesForCell<TCell>(IServiceCollection services) where TCell : Cell
         {
             services.AddHostedService<CellCachePopulatorService<TCell>>();
-            services.AddSingleton<BloodDiffusionService<TCell>>();
+            services.AddSingleton<ICacheManagementService<TCell>, CacheManagementService<TCell>>();
+            services.AddSingleton<IDiffusionService, BloodDiffusionService<TCell>>();
             services.AddScoped<BloodDiffusionJob<TCell>>();
             services.AddQuartz(q =>
             {
@@ -57,6 +62,11 @@ namespace SharedLogic
         private static void RegisterOrganName(string organName, IServiceCollection services)
         {
             services.AddSingleton(organName);
+        }
+
+        private static void RegisterMotionService(IServiceCollection services)
+        {
+            services.AddSingleton<IMotionService, MotionService>();
         }
 
         private static void RegisterCommonRedisServices(IServiceCollection services)

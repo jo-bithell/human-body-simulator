@@ -1,26 +1,23 @@
 ﻿using SharedLogic.Models.Cells;
 using SharedLogic.Diffusion.Services.Interfaces;
 using Lungs.Models;
-using SharedLogic.Caching.Services;
 using SharedLogic.Caching.Services.Interfaces;
 
 namespace Lungs.Services
 {
-    internal class AirDiffusionService : DiffusionService
+    internal class AirDiffusionService : IDiffusionService
     {
-        private readonly string _organName;
-        private readonly IRedisCacheService _cacheService;
+        private readonly ICacheManagementService<AlveolarCell> _cacheManagementService;
         private Air _air;
-        internal AirDiffusionService(string organName, IRedisCacheService cacheService, Air air)
+        internal AirDiffusionService(ICacheManagementService<AlveolarCell> cacheManagementService, Air air)
         {
             _air = air;
-            _organName = organName;
-            _cacheService = cacheService;
+            _cacheManagementService = cacheManagementService;
         }
 
         public async Task DiffuseAsync()
         {
-            await CacheHelper.PerformFunctionAsync(_organName, _cacheService, async (AlveolarCell cell) =>
+            await _cacheManagementService.PerformFunctionAsync(async (AlveolarCell cell) =>
             {
                 DiffuseFromAir(cell);
                 await Task.CompletedTask;

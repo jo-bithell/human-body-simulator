@@ -1,20 +1,15 @@
-﻿using SharedLogic.Models.Cells;
-using SharedLogic.Caching.Services;
-using SharedLogic.Caching.Services.Interfaces;
-using SharedLogic.Digestion.Services.Interfaces;
-using SharedLogic.Respiration.Services.Interfaces;
-using SharedLogic.Respiration.Factories;
-using SharedLogic.Respiration.Services;
+﻿using SharedLogic.Digestion.Services.Interfaces;
+using SharedLogic.Motion.Services;
 
 namespace SharedLogic.Digestion.Services
 {
     public abstract class DigestionService : IDigestionService
     {
         public readonly static string InputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input"));
-        private readonly IRespirationService _respirationService;
-        public DigestionService(IRedisCacheService cacheService, string organName, IRespirationServiceFactory respirationServiceFactory)
+        private readonly IMotionService _motionService;
+        public DigestionService(IMotionService motionService)
         {
-            _respirationService = respirationServiceFactory.GetServiceForRespiration().GetAwaiter().GetResult();
+            _motionService = motionService;
         }
 
         public abstract Task DigestAsync();
@@ -64,9 +59,9 @@ namespace SharedLogic.Digestion.Services
             }
         }
 
-        public virtual void PerformMotion()
+        public virtual async Task PerformMotion(int atpThreshold)
         {
-            _respirationService.Process();
+            await _motionService.PerformMotionAsync(atpThreshold);
         }
 
         public static string GetOutputDirectory(string organ)
