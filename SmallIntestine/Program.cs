@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedLogic;
-using SharedLogic.Models.Cells;
-using Quartz;
 using SharedLogic.Digestion.Services.Interfaces;
 using SmallIntestine.Services;
 using SmallIntestine.Models;

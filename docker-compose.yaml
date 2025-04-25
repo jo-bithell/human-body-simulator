@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+ stomach-service:
+   build:
+     context: .
+     dockerfile: Stomach/Dockerfile
+   environment:
+     - DOTNET_RUNNING_IN_CONTAINER=true
+   ports:
+     - "5000:5000"
+     - "5001:5001"
+   volumes:
+     - ./Stomach:/app
+   restart: always
+
+ small-intestine-service:
+   build:
+     context: .
+     dockerfile: SmallIntestine/Dockerfile
+   environment:
+     - DOTNET_RUNNING_IN_CONTAINER=true
+   ports:
+     - "6000:6000"
+     - "6001:6001"
+   volumes:
+     - ./SmallIntestine:/app
+   restart: always
+
+ redis:
+   image: "redis:latest"
+   ports:
+     - "6379:6379"
+   restart: always
+
+ rabbitmq:
+   image: "rabbitmq:3-management"
+   environment:
+     - RABBITMQ_DEFAULT_USER=guest
+     - RABBITMQ_DEFAULT_PASS=guest
+   ports:
+     - "5672:5672"
+     - "15672:15672"
+   restart: always
