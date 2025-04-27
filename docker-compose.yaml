@@ -1,18 +1,26 @@
 version: '3.8'
 
+networks:
+ shared-network:
+   driver: bridge
+
 services:
- stomach-service:
-   build:
-     context: .
-     dockerfile: Stomach/Dockerfile
-   environment:
-     - DOTNET_RUNNING_IN_CONTAINER=true
-   ports:
-     - "5000:5000"
-     - "5001:5001"
-   volumes:
+ stomach-service:  
+   build:  
+     context: .  
+     dockerfile: Stomach/Dockerfile  
+   environment:  
+     - DOTNET_RUNNING_IN_CONTAINER=true  
+   ports:  
+     - "5000:5000"  
+     - "5001:5001"  
+   volumes:  
      - ./Stomach:/app
+   working_dir: /app/bin/Debug/net9.0  
+   command: ["dotnet", "Stomach.dll"]  
    restart: always
+   networks:
+     - shared-network
 
  small-intestine-service:
    build:
@@ -25,13 +33,88 @@ services:
      - "6001:6001"
    volumes:
      - ./SmallIntestine:/app
+   working_dir: /app/bin/Debug/net9.0
+   command: ["dotnet", "SmallIntestine.dll"]
    restart: always
+   networks:
+     - shared-network
+
+ left-atrium-service:
+   build:
+     context: .
+     dockerfile: LeftAtrium/Dockerfile
+   environment:
+     - DOTNET_RUNNING_IN_CONTAINER=true
+   ports:
+     - "7000:7000"
+     - "7001:7001"
+   volumes:
+     - ./LeftAtrium:/app
+   working_dir: /app/bin/Debug/net9.0
+   command: ["dotnet", "LeftAtrium.dll"]
+   restart: always
+   networks:
+     - shared-network
+
+ lungs-service:
+   build:
+     context: .
+     dockerfile: Lungs/Dockerfile
+   environment:
+     - DOTNET_RUNNING_IN_CONTAINER=true
+   ports:
+     - "8000:8000"
+     - "8001:8001"
+   volumes:
+     - ./Lungs:/app
+   working_dir: /app/bin/Debug/net9.0
+   command: ["dotnet", "Lungs.dll"]
+   restart: always
+   networks:
+     - shared-network
+
+ mouth-service:
+   build:
+     context: .  
+     dockerfile: Mouth/Dockerfile  
+   environment:  
+     - DOTNET_RUNNING_IN_CONTAINER=true  
+   ports:  
+     - "9000:9000"  
+     - "9001:9001"  
+   volumes:  
+     - ./Mouth:/app
+   working_dir: /app/bin/Debug/net9.0  
+   command: ["dotnet", "Mouth.dll"]  
+   restart: always
+   networks:
+     - shared-network
+
+ right-atrium-service:
+   build:
+     context: .  
+     dockerfile: RightAtrium/Dockerfile  
+   environment:  
+     - DOTNET_RUNNING_IN_CONTAINER=true  
+   ports:  
+     - "10000:10000"  
+     - "10001:10001"  
+   volumes:  
+     - ./RightAtrium:/app
+   working_dir: /app/bin/Debug/net9.0  
+   command: ["dotnet", "RightAtrium.dll"]  
+   restart: always
+   networks:
+     - shared-network
 
  redis:
    image: "redis:latest"
+   container_name: redis
    ports:
      - "6379:6379"
    restart: always
+   networks:
+     - shared-network
 
  rabbitmq:
    image: "rabbitmq:3-management"
@@ -42,3 +125,5 @@ services:
      - "5672:5672"
      - "15672:15672"
    restart: always
+   networks:
+     - shared-network

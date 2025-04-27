@@ -85,7 +85,7 @@ namespace SharedLogic
 
         private static void RegisterCommonRedisServices(IServiceCollection services)
         {
-            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost: 6801"));
+            services.AddSingleton<IConnectionMultiplexer>(RedisConnector.ConnectWithRetry());
             services.AddSingleton<IRedisCacheService, RedisCacheService>();
         }
 

@@ -2,6 +2,9 @@
   "profiles": {
     "LeftAtrium": {
       "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
     }
   }
 }
