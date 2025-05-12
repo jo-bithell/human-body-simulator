@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeftAtrium", "LeftAtrium\Le
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{D63C30AD-4ACF-46E7-980A-E9318A648FBA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{793F774C-92BC-40B2-8F86-46FC890C7564}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{793F774C-92BC-40B2-8F86-46FC890C7564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{793F774C-92BC-40B2-8F86-46FC890C7564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{793F774C-92BC-40B2-8F86-46FC890C7564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{793F774C-92BC-40B2-8F86-46FC890C7564}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

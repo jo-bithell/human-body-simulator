@@ -18,7 +18,6 @@ services:
      - ./Stomach:/app
    working_dir: /app/bin/Debug/net9.0  
    command: ["dotnet", "Stomach.dll"]  
-   restart: always
    networks:
      - shared-network
 
@@ -35,7 +34,6 @@ services:
      - ./SmallIntestine:/app
    working_dir: /app/bin/Debug/net9.0
    command: ["dotnet", "SmallIntestine.dll"]
-   restart: always
    networks:
      - shared-network
 
@@ -52,7 +50,6 @@ services:
      - ./LeftAtrium:/app
    working_dir: /app/bin/Debug/net9.0
    command: ["dotnet", "LeftAtrium.dll"]
-   restart: always
    networks:
      - shared-network
 
@@ -69,7 +66,6 @@ services:
      - ./Lungs:/app
    working_dir: /app/bin/Debug/net9.0
    command: ["dotnet", "Lungs.dll"]
-   restart: always
    networks:
      - shared-network
 
@@ -86,7 +82,6 @@ services:
      - ./Mouth:/app
    working_dir: /app/bin/Debug/net9.0  
    command: ["dotnet", "Mouth.dll"]  
-   restart: always
    networks:
      - shared-network
 
@@ -103,7 +98,6 @@ services:
      - ./RightAtrium:/app
    working_dir: /app/bin/Debug/net9.0  
    command: ["dotnet", "RightAtrium.dll"]  
-   restart: always
    networks:
      - shared-network
 
@@ -112,18 +106,17 @@ services:
    container_name: redis
    ports:
      - "6379:6379"
-   restart: always
    networks:
      - shared-network
 
  rabbitmq:
    image: "rabbitmq:3-management"
+   container_name: rabbitmq
    environment:
      - RABBITMQ_DEFAULT_USER=guest
      - RABBITMQ_DEFAULT_PASS=guest
    ports:
      - "5672:5672"
      - "15672:15672"
-   restart: always
    networks:
      - shared-network

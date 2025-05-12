@@ -14,8 +14,13 @@ public class RedisConnector
         {
             try
             {
+                ConfigurationOptions option = new ConfigurationOptions
+                {
+                    AbortOnConnectFail = false,
+                    EndPoints = { RedisConnectionString }
+                };
                 Console.WriteLine($"Attempting to connect to Redis... (Attempt {attempt + 1})");
-                var connection = ConnectionMultiplexer.Connect(RedisConnectionString);
+                var connection = ConnectionMultiplexer.Connect(option);
                 Console.WriteLine("Connected to Redis successfully!");
                 return connection;
             }
