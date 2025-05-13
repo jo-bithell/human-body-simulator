@@ -8,7 +8,8 @@ services:
  stomach-service:  
    build:  
      context: .  
-     dockerfile: Stomach/Dockerfile  
+     dockerfile: Stomach/Dockerfile
+   container_name: stomach-service
    environment:  
      - DOTNET_RUNNING_IN_CONTAINER=true  
    ports:  
@@ -25,6 +26,7 @@ services:
    build:
      context: .
      dockerfile: SmallIntestine/Dockerfile
+   container_name: small-intestine-service
    environment:
      - DOTNET_RUNNING_IN_CONTAINER=true
    ports:
@@ -41,6 +43,7 @@ services:
    build:
      context: .
      dockerfile: LeftAtrium/Dockerfile
+   container_name: left-atrium-service
    environment:
      - DOTNET_RUNNING_IN_CONTAINER=true
    ports:
@@ -57,6 +60,7 @@ services:
    build:
      context: .
      dockerfile: Lungs/Dockerfile
+   container_name: lungs-service
    environment:
      - DOTNET_RUNNING_IN_CONTAINER=true
    ports:
@@ -72,7 +76,8 @@ services:
  mouth-service:
    build:
      context: .  
-     dockerfile: Mouth/Dockerfile  
+     dockerfile: Mouth/Dockerfile
+   container_name: mouth-service
    environment:  
      - DOTNET_RUNNING_IN_CONTAINER=true  
    ports:  
@@ -88,7 +93,8 @@ services:
  right-atrium-service:
    build:
      context: .  
-     dockerfile: RightAtrium/Dockerfile  
+     dockerfile: RightAtrium/Dockerfile
+   container_name: right-atrium-service
    environment:  
      - DOTNET_RUNNING_IN_CONTAINER=true  
    ports:  
@@ -100,6 +106,24 @@ services:
    command: ["dotnet", "RightAtrium.dll"]  
    networks:
      - shared-network
+
+ API-service:
+   build:
+     context: .  
+     dockerfile: API/Dockerfile
+   container_name: API-service
+   environment:  
+     - DOTNET_RUNNING_IN_CONTAINER=true  
+   ports:  
+     - "11000:11000"  
+     - "11001:11001"  
+   volumes:  
+     - ./API:/app
+   working_dir: /app/bin/Debug/net9.0  
+   command: ["dotnet", "API.dll"]  
+   networks:
+     - shared-network
+
 
  redis:
    image: "redis:latest"

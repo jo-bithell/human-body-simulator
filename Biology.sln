@@ -5,8 +5,6 @@ VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RightAtrium", "RightAtrium\RightAtrium.csproj", "{DE16DA39-1379-4312-A716-51C7B5641A8B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BiologyTests", "BiologyTest\BiologyTests.csproj", "{962803CA-CFE1-4BC3-98CA-12BE47B16185}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lungs", "Lungs\Lungs.csproj", "{BBE42121-7F72-4E2C-AF20-3FC030A1D729}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLogic", "SharedLogic\SharedLogic.csproj", "{8C358B34-2D5F-4570-9842-5B7A3A2A095B}"
@@ -28,8 +26,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeftAtrium", "LeftAtrium\Le
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{D63C30AD-4ACF-46E7-980A-E9318A648FBA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{793F774C-92BC-40B2-8F86-46FC890C7564}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,10 +36,6 @@ Global
 		{DE16DA39-1379-4312-A716-51C7B5641A8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE16DA39-1379-4312-A716-51C7B5641A8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE16DA39-1379-4312-A716-51C7B5641A8B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{962803CA-CFE1-4BC3-98CA-12BE47B16185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{962803CA-CFE1-4BC3-98CA-12BE47B16185}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{962803CA-CFE1-4BC3-98CA-12BE47B16185}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{962803CA-CFE1-4BC3-98CA-12BE47B16185}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BBE42121-7F72-4E2C-AF20-3FC030A1D729}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BBE42121-7F72-4E2C-AF20-3FC030A1D729}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBE42121-7F72-4E2C-AF20-3FC030A1D729}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -72,10 +64,6 @@ Global
 		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{793F774C-92BC-40B2-8F86-46FC890C7564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{793F774C-92BC-40B2-8F86-46FC890C7564}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{793F774C-92BC-40B2-8F86-46FC890C7564}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{793F774C-92BC-40B2-8F86-46FC890C7564}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
