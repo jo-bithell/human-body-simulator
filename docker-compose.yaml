@@ -107,20 +107,20 @@ services:
    networks:
      - shared-network
 
- API-service:
+ api-service:
    build:
      context: .  
-     dockerfile: API/Dockerfile
-   container_name: API-service
+     dockerfile: api/Dockerfile
+   container_name: api-service
    environment:  
      - DOTNET_RUNNING_IN_CONTAINER=true  
    ports:  
      - "11000:11000"  
      - "11001:11001"  
    volumes:  
-     - ./API:/app
+     - ./api:/app
    working_dir: /app/bin/Debug/net9.0  
-   command: ["dotnet", "API.dll"]  
+   command: ["dotnet", "api.dll"]  
    networks:
      - shared-network
 
