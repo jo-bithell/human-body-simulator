@@ -16,7 +16,8 @@ namespace SharedLogic.Messaging.Services
             {
                 HostName = "rabbitmq",
                 UserName = "guest",
-                Password = "guest"
+                Password = "guest",
+                Port = 5672
             };
 
             var connection = factory.CreateConnection();

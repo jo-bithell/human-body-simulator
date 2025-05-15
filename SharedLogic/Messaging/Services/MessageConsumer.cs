@@ -23,7 +23,8 @@ namespace SharedLogic.Messaging.Services
             {
                 HostName = "rabbitmq",
                 UserName = "guest",
-                Password = "guest"
+                Password = "guest",
+                Port = 5672
             };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();

@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Configure Redis Cache
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("redis: 6379"));
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("redis:6379,abortConnect=false"));
 
 var app = builder.Build();
 
