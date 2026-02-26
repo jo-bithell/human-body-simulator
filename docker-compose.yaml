@@ -130,8 +130,8 @@ services:
    environment:  
      - DOTNET_RUNNING_IN_CONTAINER=true  
    ports:  
-     - "10000:10000"  
-     - "10001:10001"  
+     - "10015:10015"  
+     - "10016:10016"  
    volumes:  
      - ./RightAtrium:/app
    working_dir: /app/bin/Debug/net9.0  
@@ -163,6 +163,7 @@ services:
    depends_on:
      rabbitmq:
        condition: service_healthy
+
  rabbitmq:
    image: "rabbitmq:3-management"
    container_name: rabbitmq
@@ -170,8 +171,8 @@ services:
      - RABBITMQ_DEFAULT_USER=guest
      - RABBITMQ_DEFAULT_PASS=guest
    ports:
-     - "5672:5672"
-     - "15672:15672"
+     - "5673:5673"
+     - "15673:15673"
    networks:
      - shared-network
    healthcheck:

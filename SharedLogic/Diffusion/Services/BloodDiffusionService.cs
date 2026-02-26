@@ -49,60 +49,60 @@ namespace SharedLogic.Diffusion.Services
 
         private void DiffuseWater(Blood blood, C cell)
         {
-            while (!cell.ConcentrationHigherInCell(cell.WaterCount, cell.WaterCount))
+            while (!cell.ConcentrationHigherInCell(cell.NutrientConcentrations.WaterCount, cell.NutrientConcentrations.WaterCount))
             {
-                cell.WaterCount += 1;
+                cell.NutrientConcentrations.WaterCount += 1;
                 blood.WaterCount -= 1;
             }
 
-            while (cell.ConcentrationHigherInCell(cell.WaterCount, blood.WaterCount))
+            while (cell.ConcentrationHigherInCell(cell.NutrientConcentrations.WaterCount, blood.WaterCount))
             {
-                cell.WaterCount -= 1;
+                cell.NutrientConcentrations.WaterCount -= 1;
                 blood.WaterCount += 1;
             }
         }
 
         private void DiffuseGlucose(Blood blood, C cell)
         {
-            while (!cell.ConcentrationHigherInCell(cell.GlucoseCount, blood.GlucoseCount))
+            while (!cell.ConcentrationHigherInCell(cell.NutrientConcentrations.GlucoseCount, blood.GlucoseCount))
             {
-                cell.GlucoseCount += 1;
+                cell.NutrientConcentrations.GlucoseCount += 1;
                 blood.GlucoseCount -= 1;
             }
 
-            while (cell.ConcentrationHigherInCell(cell.GlucoseCount, blood.GlucoseCount))
+            while (cell.ConcentrationHigherInCell(cell.NutrientConcentrations.GlucoseCount, blood.GlucoseCount))
             {
-                cell.GlucoseCount -= 1;
+                cell.NutrientConcentrations.GlucoseCount -= 1;
                 blood.GlucoseCount += 1;
             }
         }
 
         private void DiffuseOxygen(Blood blood, C cell)
         {
-            while (!cell.ConcentrationHigherInCell(cell.OxygenCount, blood.OxygenCount))
+            while (!cell.ConcentrationHigherInCell(cell.NutrientConcentrations.OxygenCount, blood.OxygenCount))
             {
-                cell.OxygenCount += 1;
+                cell.NutrientConcentrations.OxygenCount += 1;
                 blood.OxygenCount -= 1;
             }
 
-            while (cell.ConcentrationHigherInCell(cell.OxygenCount, blood.OxygenCount))
+            while (cell.ConcentrationHigherInCell(cell.NutrientConcentrations.OxygenCount, blood.OxygenCount))
             {
-                cell.OxygenCount -= 1;
+                cell.NutrientConcentrations.OxygenCount -= 1;
                 blood.OxygenCount += 1;
             }
         }
 
         private void DiffuseCarbonDioxide(Blood blood, C cell)
         {
-            while (!cell.ConcentrationHigherInCell(cell.CarbonDioxideCount, blood.CarbonDioxideCount))
+            while (!cell.ConcentrationHigherInCell(cell.NutrientConcentrations.CarbonDioxideCount, blood.CarbonDioxideCount))
             {
-                cell.CarbonDioxideCount += 1;
+                cell.NutrientConcentrations.CarbonDioxideCount += 1;
                 blood.CarbonDioxideCount -= 1;
             }
 
-            while (cell.ConcentrationHigherInCell(cell.CarbonDioxideCount, blood.CarbonDioxideCount))
+            while (cell.ConcentrationHigherInCell(cell.NutrientConcentrations.CarbonDioxideCount, blood.CarbonDioxideCount))
             {
-                cell.CarbonDioxideCount -= 1;
+                cell.NutrientConcentrations.CarbonDioxideCount -= 1;
                 blood.CarbonDioxideCount += 1;
             }
         }

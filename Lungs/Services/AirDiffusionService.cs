@@ -36,30 +36,30 @@ namespace Lungs.Services
 
         private void DiffuseCarbonDioxide(AlveolarCell cell)
         {
-            while (!cell.ConcentrationHigherInCell(cell.CarbonDioxideCount, _air.CarbonDioxideCount))
+            while (!cell.ConcentrationHigherInCell(cell.NutrientConcentrations.CarbonDioxideCount, _air.CarbonDioxideCount))
             {
-                cell.CarbonDioxideCount += 1;
+                cell.NutrientConcentrations.CarbonDioxideCount += 1;
                 _air.CarbonDioxideCount -= 1;
             }
 
-            while (cell.ConcentrationHigherInCell(cell.CarbonDioxideCount, _air.CarbonDioxideCount))
+            while (cell.ConcentrationHigherInCell(cell.NutrientConcentrations.CarbonDioxideCount, _air.CarbonDioxideCount))
             {
-                cell.CarbonDioxideCount -= 1;
+                cell.NutrientConcentrations.CarbonDioxideCount -= 1;
                 _air.CarbonDioxideCount += 1;
             }
         }
 
         private void DiffuseOxygen(AlveolarCell cell)
         {
-            while (!cell.ConcentrationHigherInCell(cell.OxygenCount, _air.OxygenCount))
+            while (!cell.ConcentrationHigherInCell(cell.NutrientConcentrations.OxygenCount, _air.OxygenCount))
             {
-                cell.OxygenCount += 1;
+                cell.NutrientConcentrations.OxygenCount += 1;
                 _air.OxygenCount -= 1;
             }
 
-            while (cell.ConcentrationHigherInCell(cell.OxygenCount, _air.OxygenCount))
+            while (cell.ConcentrationHigherInCell(cell.NutrientConcentrations.OxygenCount, _air.OxygenCount))
             {
-                cell.OxygenCount -= 1;
+                cell.NutrientConcentrations.OxygenCount -= 1;
                 _air.OxygenCount += 1;
             }
         }

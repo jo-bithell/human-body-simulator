@@ -25,7 +25,7 @@ namespace SharedLogic.Caching.Services
         public async Task<bool> CellHasSufficientATP(int atpThreshold)
         {
             var cell = await GetCellFromCacheAsync();
-            return cell.ATPCount >= atpThreshold;
+            return cell.NutrientConcentrations.ATPCount >= atpThreshold;
         }
 
         public async Task<C> GetCellFromCacheAsync()

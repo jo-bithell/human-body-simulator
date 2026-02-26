@@ -28,13 +28,13 @@ namespace SharedLogic.Motion
 
         private void PerformMotion(Myocyte myocyte, int atpThreshold)
         {
-            if (myocyte.ATPCount < atpThreshold)
+            if (myocyte.NutrientConcentrations.ATPCount < atpThreshold)
             {
                 Console.WriteLine("ATP count insufficient.");
                 return;
             }
 
-            myocyte.ATPCount = Math.Max(0, myocyte.ATPCount - atpThreshold);
+            myocyte.NutrientConcentrations.ATPCount = Math.Max(0, myocyte.NutrientConcentrations.ATPCount - atpThreshold);
 
             Console.WriteLine($"Motion performed, {atpThreshold} ATP consumed");
         }
