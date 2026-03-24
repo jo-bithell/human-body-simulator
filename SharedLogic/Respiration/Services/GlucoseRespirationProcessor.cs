@@ -5,11 +5,11 @@ using SharedLogic.Respiration.Services.Interfaces;
 
 namespace SharedLogic.Respiration.Services
 {
-    internal class GlucoseRespirationProcessor<C> : IRespirationProcessor<C> where C : Cell
+    public class GlucoseRespirationProcessor<C> : IRespirationProcessor<C> where C : Cell
     {
         private Cell _cell;
         private Enzyme? _atpSynthase;
-        internal GlucoseRespirationProcessor(C cell)
+        public GlucoseRespirationProcessor(C cell)
         {
             _cell = cell;
             SetATPSynthase(cell);
@@ -67,6 +67,7 @@ namespace SharedLogic.Respiration.Services
             if (_atpSynthase != null)
             {
                 _atpSynthase.PerformAction();
+                _cell.NutrientConcentrations.OxygenCount -= 6;
                 _cell.NutrientConcentrations.WaterCount += 1;
                 _cell.NutrientConcentrations.ATPCount += 34;
                 _atpSynthase.InUse = false;

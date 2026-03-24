@@ -1,4 +1,5 @@
-﻿using SharedLogic.Digestion.Services;
+﻿using Microsoft.Extensions.Logging;
+using SharedLogic.Digestion.Services;
 using SharedLogic.Motion.Services;
 
 namespace Mouth.Services
@@ -7,9 +8,11 @@ namespace Mouth.Services
     {
         private readonly string OutputDirectory = GetOutputDirectory("Stomach");
         private readonly int _atpThreshold = 5;
-        public MouthDigestionService(IMotionService motionService)
-            : base(motionService)
+        private readonly ILogger<MouthDigestionService> _logger;
+        public MouthDigestionService(IMotionService motionService, ILogger<MouthDigestionService> logger)
+            : base(motionService, logger)
         {
+            _logger = logger;
         }
 
         public override async Task DigestAsync()
@@ -26,7 +29,7 @@ namespace Mouth.Services
         {
             if (!await CanPerformDigestion(_atpThreshold))
             {
-                Console.WriteLine("Insufficient ATP to perform digestion");
+                _logger.LogWarning("Insufficient ATP to perform digestion");
                 return;
             }
 

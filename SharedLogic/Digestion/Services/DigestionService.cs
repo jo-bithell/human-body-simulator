@@ -1,4 +1,5 @@
-﻿using SharedLogic.Digestion.Services.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using SharedLogic.Digestion.Services.Interfaces;
 using SharedLogic.Motion.Services;
 
 namespace SharedLogic.Digestion.Services
@@ -7,9 +8,11 @@ namespace SharedLogic.Digestion.Services
     {
         public readonly static string InputDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "input"));
         private readonly IMotionService _motionService;
-        public DigestionService(IMotionService motionService)
+        private readonly ILogger<DigestionService> _logger;
+        public DigestionService(IMotionService motionService, ILogger<DigestionService> logger)
         {
             _motionService = motionService;
+            _logger = logger;
         }
 
         public abstract Task DigestAsync();
@@ -34,16 +37,16 @@ namespace SharedLogic.Digestion.Services
             {
                 if (File.Exists(filePath))
                 {
-                    Console.WriteLine("Received csv");
+                    _logger.LogInformation("Processing file: {FilePath}", filePath);
                     var records = ReadCsvFile(filePath);
 
                     await func(records);
-                    Console.WriteLine("Sent csv");
+                    _logger.LogInformation("Sent csv");
                     //File.Delete(filePath); // Delete the file after reading
                 }
                 else
                 {
-                    Console.WriteLine($"File not found: {filePath}");
+                    _logger.LogWarning("File not found: {FilePath}", filePath);
                 }
             }
         }

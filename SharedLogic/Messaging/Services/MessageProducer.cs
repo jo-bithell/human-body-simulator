@@ -1,4 +1,5 @@
-﻿using RabbitMQ.Client;
+﻿using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 using SharedLogic.Messaging.Services.Interfaces;
 using System.Text;
 using System.Text.Json;
@@ -9,8 +10,9 @@ namespace SharedLogic.Messaging.Services
     {
         private IModel _channel;
         private string _routingKey;
+        private readonly ILogger<MessageProducer<T>> _logger;
 
-        public MessageProducer(string routingKey)
+        public MessageProducer(string routingKey, ILogger<MessageProducer<T>> logger)
         {
             var factory = new ConnectionFactory
             {
@@ -24,6 +26,7 @@ namespace SharedLogic.Messaging.Services
             _channel = connection.CreateModel();
             _routingKey = routingKey;
             _channel.ExchangeDeclare("not-default", ExchangeType.Direct);
+            _logger = logger;
         }
 
         public void SendMessage(T message)
@@ -38,7 +41,7 @@ namespace SharedLogic.Messaging.Services
 
             _channel.BasicPublish(string.Empty, routingKey: _routingKey, body: body);
 
-            Console.WriteLine($"Published message");
+            _logger.LogInformation("Published message");
         }
     }
 }

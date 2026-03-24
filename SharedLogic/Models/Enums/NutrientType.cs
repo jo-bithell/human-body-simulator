@@ -7,5 +7,6 @@
         Fat,
         Starch,
         Sucrose,
+        AminoAcid
     }
 }

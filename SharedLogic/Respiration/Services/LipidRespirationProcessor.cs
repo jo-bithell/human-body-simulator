@@ -9,43 +9,23 @@ namespace SharedLogic.Respiration.Services
     {
         private Cell _cell;
         private Enzyme? _atpSynthase;
-        private Enzyme? _cpt_ISynthase;
+        private Enzyme? _lipase;
         internal LipidRespirationProcessor(C cell)
         {
             _cell = cell;
-            SetATPSynthase(cell);
-            SetCPT_ISynthase(cell);
+            _atpSynthase = cell.GetAvailableEnzyme(EnzymeType.ATPSynthase);
+            _lipase = cell.GetAvailableEnzyme(EnzymeType.Lipase);
         }
 
         public void Process()
         {
-            if (_cpt_ISynthase == null)
+            if (_lipase == null)
                 return;
 
             ActivateFattyAcids();
             PerformBetaOxidization();
             PerformKrebsCycle();
             PerformElectronTransportChain();
-        }
-
-        private void SetATPSynthase(C cell)
-        {
-            var atpSynthase = cell.Enzymes.Where(o => o.EnzymeType == EnzymeType.ATPSynthase).FirstOrDefault(o => !o.InUse);
-            if (atpSynthase != null)
-            {
-                _atpSynthase = atpSynthase;
-                _atpSynthase.InUse = true;
-            }
-        }
-
-        private void SetCPT_ISynthase(C cell)
-        {
-            var cpt_ISynthase = cell.Enzymes.Where(o => o.EnzymeType == EnzymeType.CPT_I).FirstOrDefault(o => !o.InUse);
-            if (cpt_ISynthase != null)
-            {
-                _cpt_ISynthase = cpt_ISynthase;
-                _cpt_ISynthase.InUse = true;
-            }
         }
 
         private void ActivateFattyAcids()

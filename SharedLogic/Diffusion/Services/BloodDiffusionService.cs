@@ -3,6 +3,7 @@ using SharedLogic.Messaging.Models;
 using SharedLogic.Models;
 using SharedLogic.Models.Cells;
 using SharedLogic.Caching.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace SharedLogic.Diffusion.Services
 {
@@ -10,22 +11,25 @@ namespace SharedLogic.Diffusion.Services
     {
         private readonly SnapshotCache<Blood> _bloodCache;
         private readonly ICacheManagementService<C> _cacheManagementService;
-        public BloodDiffusionService(SnapshotCache<Blood> bloodCache, ICacheManagementService<C> cacheManagementService)
+        private readonly ILogger<BloodDiffusionService<C>> _logger;
+
+        public BloodDiffusionService(SnapshotCache<Blood> bloodCache, ICacheManagementService<C> cacheManagementService, ILogger<BloodDiffusionService<C>> logger)
         {
             _bloodCache = bloodCache;
             _cacheManagementService = cacheManagementService;
+            _logger = logger;
         }
 
         public async Task DiffuseAsync()
         {
             while (_bloodCache.Queue.TryDequeue(out var blood))
             {
-                Console.WriteLine("Diffusing nutrients");
+                _logger.LogInformation("Diffusing nutrients");
 
                 await DiffuseNutrientsFromBlood(blood);
                 _bloodCache.Queue.Enqueue(blood);
 
-                Console.WriteLine("Nutrients diffused");
+                _logger.LogInformation("Nutrients diffused");
             }
         }
 

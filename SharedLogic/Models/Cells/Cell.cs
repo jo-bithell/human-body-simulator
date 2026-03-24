@@ -7,18 +7,19 @@ namespace SharedLogic.Models.Cells
     {
         private static readonly int _defaultConcentration = 10;
         public NutrientConcentrations NutrientConcentrations { get; set; } = new NutrientConcentrations(_defaultConcentration);
-        public List<Enzyme> Enzymes { get; set; } = GetInitialEnzymes();
+        public List<Enzyme> Enzymes { get; set; } = new List<Enzyme>
+        {
+            new Enzyme{ EnzymeType = EnzymeType.ATPSynthase },
+            new Enzyme{ EnzymeType = EnzymeType.Lipase },
+        };
 
         public bool ConcentrationHigherInCell(int concentrationInsideCell, int concentrationOutsideCell)
             => concentrationInsideCell > _defaultConcentration && concentrationOutsideCell < _defaultConcentration;
 
-        private static List<Enzyme> GetInitialEnzymes()
-            => new List<Enzyme>
-            {
-                new Enzyme{ EnzymeType = EnzymeType.ATPSynthase },
-                new Enzyme{ EnzymeType = EnzymeType.CPT_I },
-            };
+        public Enzyme? GetAvailableEnzyme(EnzymeType enzymeType)
+            => Enzymes.Where(o => !o.InUse)?.FirstOrDefault(o => o.EnzymeType == enzymeType);
     }
+
 
     public class NutrientConcentrations(int defaultConcentration)
     {

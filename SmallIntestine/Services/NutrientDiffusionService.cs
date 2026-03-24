@@ -16,9 +16,22 @@ namespace SmallIntestine.Services
         {
             await _cacheManagementService.PerformFunctionAsync(async (Enterocyte cell) =>
             {
-                // perform function
+                DiffuseGlucose(cell, glucoseCount);
                 await Task.CompletedTask;
             });
+        }
+
+        private void DiffuseGlucose(Enterocyte cell, int glucoseCount)
+        {
+            while (!cell.ConcentrationHigherInCell(cell.NutrientConcentrations.GlucoseCount, glucoseCount))
+            {
+                cell.NutrientConcentrations.GlucoseCount += 1;
+            }
+
+            while (cell.ConcentrationHigherInCell(cell.NutrientConcentrations.GlucoseCount, glucoseCount))
+            {
+                cell.NutrientConcentrations.GlucoseCount -= 1;
+            }
         }
     }
 }

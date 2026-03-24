@@ -1,4 +1,5 @@
-﻿using SharedLogic.Messaging.Factories.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using SharedLogic.Messaging.Factories.Interfaces;
 using SharedLogic.Messaging.Services;
 using SharedLogic.Messaging.Services.Interfaces;
 using SharedLogic.Models;
@@ -17,17 +18,19 @@ namespace SharedLogic.Messaging.Factories
             { "right-atrium", "lungs" },
             { "left-atrium", GetLeftAtriumMessageProducer() },
         };
+        private readonly ILogger<MessageProducer<Blood>> _logger;
 
-        public MessageProducerFactory(string organName)
+        public MessageProducerFactory(string organName, ILogger<MessageProducer<Blood>> logger)
         {
             _organName = organName;
+            _logger = logger;
         }
 
         public IMessageProducer<Blood> CreateBloodMessageProducer()
         {
             if (OrganMessageRoutingMap.TryGetValue(_organName, out var routingKey))
             {
-                return new MessageProducer<Blood>(routingKey);
+                return new MessageProducer<Blood>(routingKey, _logger);
             }
 
             throw new NotImplementedException();

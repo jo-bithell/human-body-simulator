@@ -1,4 +1,5 @@
-﻿using SharedLogic.Digestion.Services;
+﻿using Microsoft.Extensions.Logging;
+using SharedLogic.Digestion.Services;
 using SharedLogic.Models.Enums;
 using SharedLogic.Motion.Services;
 
@@ -9,10 +10,13 @@ namespace SmallIntestine.Services
         private readonly NutrientDiffusionService _nutrientDiffusionService;
         private readonly int _atpThreshold = 5;
         private readonly string OutputDirectory = GetOutputDirectory("LargeIntestine");
-        public SmallIntestineDigestionService(IMotionService motionService, NutrientDiffusionService nutrientDiffusionService)
-            : base(motionService)
+        private readonly ILogger<SmallIntestineDigestionService> _logger;
+
+        public SmallIntestineDigestionService(IMotionService motionService, NutrientDiffusionService nutrientDiffusionService, ILogger<SmallIntestineDigestionService> logger)
+            : base(motionService, logger)
         {
             _nutrientDiffusionService = nutrientDiffusionService;
+            _logger = logger;
         }
 
         public override async Task DigestAsync()
@@ -29,7 +33,7 @@ namespace SmallIntestine.Services
         {
             if (!await CanPerformDigestion(_atpThreshold))
             {
-                Console.WriteLine("Insufficient ATP to perform digestion");
+                _logger.LogWarning("Insufficient ATP to perform digestion");
                 return;
             }
 

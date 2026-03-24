@@ -3,6 +3,7 @@
     public enum EnzymeType
     {
         ATPSynthase,
-        CPT_I,
+        Lipase,
+        Trypsin,
     }
 }

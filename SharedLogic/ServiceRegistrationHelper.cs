@@ -36,7 +36,8 @@ namespace SharedLogic
         {
             services.AddHostedService<CellCachePopulatorService<TCell>>();
             services.AddSingleton<ICacheManagementService<TCell>, CacheManagementService<TCell>>();
-            services.AddSingleton<IRespirationProcessorFactory<TCell>, RespirationProcessorFactory<TCell>>();
+            services.AddTransient<IRespirationProcessorFactory<TCell>, RespirationProcessorFactory<TCell>>();
+            services.AddTransient<IRespirationTypeSelectorService<TCell>, RespirationTypeSelectorService<TCell>>();
             services.AddSingleton<IRespirationService<TCell>, RespirationService<TCell>>();
             services.AddScoped<RespirationJob<TCell>>();
             services.AddQuartz(q =>

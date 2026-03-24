@@ -12,7 +12,7 @@ class Program
     }
 
     static IHostBuilder CreateHostBuilder(string[] args) =>
-    Host.CreateDefaultBuilder(args)
+        Host.CreateDefaultBuilder(args)
         .ConfigureServices((hostContext, services) =>
         {
             ServiceRegistrationHelper.RegisterCommonServices("stomach", services);

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.10.35027.167
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11520.95 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RightAtrium", "RightAtrium\RightAtrium.csproj", "{DE16DA39-1379-4312-A716-51C7B5641A8B}"
 EndProject
@@ -25,6 +25,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeftAtrium", "LeftAtrium\LeftAtrium.csproj", "{5865EF8D-91FD-455D-927F-4247302A146B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{D63C30AD-4ACF-46E7-980A-E9318A648FBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{F4A128AD-F0EB-49DC-A39A-13F45E738FEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +66,10 @@ Global
 		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D63C30AD-4ACF-46E7-980A-E9318A648FBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4A128AD-F0EB-49DC-A39A-13F45E738FEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4A128AD-F0EB-49DC-A39A-13F45E738FEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4A128AD-F0EB-49DC-A39A-13F45E738FEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4A128AD-F0EB-49DC-A39A-13F45E738FEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

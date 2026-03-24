@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SharedLogic.Messaging.Models;
 using SharedLogic.Models;
 
@@ -7,10 +8,12 @@ namespace SharedLogic.Caching.Services
     public class BloodCachePopulatorService: IHostedService
     {
         private readonly SnapshotCache<Blood> _bloodCache;
+        private readonly ILogger<BloodCachePopulatorService> _logger;
 
-        public BloodCachePopulatorService(SnapshotCache<Blood> bloodCache)
+        public BloodCachePopulatorService(SnapshotCache<Blood> bloodCache, ILogger<BloodCachePopulatorService> logger)
         {
             _bloodCache = bloodCache;
+            _logger = logger;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -18,7 +21,7 @@ namespace SharedLogic.Caching.Services
             Blood newBlood = new Blood();
             _bloodCache.Queue.Enqueue(newBlood);
 
-            Console.WriteLine("Blood cache populated");
+            _logger.LogInformation("Blood cache populated");
             await Task.CompletedTask;
         }
 

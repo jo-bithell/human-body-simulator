@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SharedLogic.Messaging.Models;
@@ -13,11 +14,13 @@ namespace SharedLogic.Messaging.Services
         private readonly string _queueName;
         private readonly IConnection _connection;
         private readonly IModel _channel;
+        private readonly ILogger<MessageConsumer<T>> _logger;
 
-        public MessageConsumer(SnapshotCache<T> snapshotCache, string queueName)
+        public MessageConsumer(SnapshotCache<T> snapshotCache, string queueName, ILogger<MessageConsumer<T>> logger)
         {
             _snapshotCache = snapshotCache;
             _queueName = queueName;
+            _logger = logger;
 
             var factory = new ConnectionFactory
             {
@@ -39,7 +42,7 @@ namespace SharedLogic.Messaging.Services
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                Console.Write("Consumed message");
+                _logger.LogInformation("Consumed message");
 
                 ProcessMessage(message, stoppingToken);
             };
