@@ -2,7 +2,7 @@
 using SharedLogic.Models.Enums;
 using SharedLogic.Respiration.Services;
 
-namespace UnitTests
+namespace UnitTests.Respiration
 {
     public class GlucoseRespirationProcessorTests
     {
@@ -15,7 +15,7 @@ namespace UnitTests
         }
 
         [Fact]
-        public void GlucoseCountDecreasesByOne()
+        public void GlucoseCountDecreasesBy1()
         {
             // Act
             _glucoseRespirationProcessor.Process();
@@ -70,6 +70,15 @@ namespace UnitTests
             _glucoseRespirationProcessor.Process();
             // Assert
             Assert.Equal(4, _cell.NutrientConcentrations.OxygenCount);
+        }
+
+        [Fact]
+        public void WaterCountIncreasesBy1()
+        {
+            // Act
+            _glucoseRespirationProcessor.Process();
+            // Assert
+            Assert.Equal(11, _cell.NutrientConcentrations.WaterCount);
         }
     }
 }

@@ -5,12 +5,12 @@ using SharedLogic.Respiration.Services.Interfaces;
 
 namespace SharedLogic.Respiration.Services
 {
-    internal class LipidRespirationProcessor<C> : IRespirationProcessor<C> where C : Cell
+    public class LipidRespirationProcessor<C> : IRespirationProcessor<C> where C : Cell
     {
         private Cell _cell;
         private Enzyme? _atpSynthase;
         private Enzyme? _lipase;
-        internal LipidRespirationProcessor(C cell)
+        public LipidRespirationProcessor(C cell)
         {
             _cell = cell;
             _atpSynthase = cell.GetAvailableEnzyme(EnzymeType.ATPSynthase);
@@ -20,6 +20,9 @@ namespace SharedLogic.Respiration.Services
         public void Process()
         {
             if (_lipase == null)
+                return;
+
+            if (_atpSynthase == null)
                 return;
 
             ActivateFattyAcids();
@@ -47,9 +50,6 @@ namespace SharedLogic.Respiration.Services
 
         private void PerformElectronTransportChain()
         {
-            if (_atpSynthase == null)
-                return;
-
             _cell.NutrientConcentrations.ATPCount += 80;
             _cell.NutrientConcentrations.FattyAcidsCount -= 1;
         }

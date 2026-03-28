@@ -18,13 +18,13 @@ namespace SharedLogic.Respiration.Factories
 
         public IRespirationProcessor<C> GetServiceForRespiration(C cell)
         {
-            if (_respirationTypeSelectorService.CanDoAerobicGlucoseRespiration(cell))
+            if (_respirationTypeSelectorService.CanDoAerobicGlucoseRespiration())
             {
                 _logger.LogInformation("Aerobic glucose metabolism selected.");
                 return new GlucoseRespirationProcessor<C>(cell);
             }
 
-            if (_respirationTypeSelectorService.CanDoLipidRespiration(cell))
+            if (_respirationTypeSelectorService.CanDoLipidMetabolism())
             {
                 _logger.LogInformation("Lipid metabolism selected.");
                 return new LipidRespirationProcessor<C>(cell);

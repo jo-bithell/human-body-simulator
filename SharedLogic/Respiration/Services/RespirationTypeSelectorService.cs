@@ -5,14 +5,20 @@ namespace SharedLogic.Respiration.Services
 {
     public class RespirationTypeSelectorService<C> : IRespirationTypeSelectorService<C> where C : Cell
     {
-        public bool CanDoAerobicGlucoseRespiration(C cell)
-            => cell.NutrientConcentrations.GlucoseCount > 0
-            && cell.NutrientConcentrations.OxygenCount > 0
-            && cell.Enzymes.Any(o => o.EnzymeType == EnzymeType.ATPSynthase);
+        private readonly Cell _cell;
+        public RespirationTypeSelectorService(Cell cell) 
+        {
+            _cell = cell;
+        }
 
-        public bool CanDoLipidRespiration(C cell)
-            => cell.NutrientConcentrations.FattyAcidsCount > 0
-            && cell.Enzymes.Any(o => o.EnzymeType == EnzymeType.ATPSynthase)
-            && cell.Enzymes.Any(o => o.EnzymeType == EnzymeType.Lipase);
+        public bool CanDoAerobicGlucoseRespiration()
+            => _cell.NutrientConcentrations.GlucoseCount >= 1
+            && _cell.NutrientConcentrations.OxygenCount >= 6
+            && _cell.Enzymes.Any(o => o.EnzymeType == EnzymeType.ATPSynthase);
+
+        public bool CanDoLipidMetabolism()
+            => _cell.NutrientConcentrations.FattyAcidsCount >= 1
+            && _cell.Enzymes.Any(o => o.EnzymeType == EnzymeType.ATPSynthase)
+            && _cell.Enzymes.Any(o => o.EnzymeType == EnzymeType.Lipase);
     }
 }

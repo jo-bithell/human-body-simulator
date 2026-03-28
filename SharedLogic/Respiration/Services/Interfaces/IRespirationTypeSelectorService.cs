@@ -4,8 +4,8 @@ namespace SharedLogic.Respiration.Services
 {
     public interface IRespirationTypeSelectorService<C> where C : Cell
     {
-        bool CanDoAerobicGlucoseRespiration(C cell);
+        bool CanDoAerobicGlucoseRespiration();
 
-        bool CanDoLipidRespiration(C cell);
+        bool CanDoLipidMetabolism();
     }
 }
