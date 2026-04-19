@@ -6,13 +6,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Lungs.Services
 {
-    internal class AirDiffusionService : IDiffusionService
+    public class AirDiffusionService : IDiffusionService
     {
         private readonly ICacheManagementService<AlveolarCell> _cacheManagementService;
         private Air _air;
         private readonly ILogger<AirDiffusionService> _logger;
 
-        internal AirDiffusionService(ICacheManagementService<AlveolarCell> cacheManagementService, Air air, ILogger<AirDiffusionService> logger)
+        public AirDiffusionService(ICacheManagementService<AlveolarCell> cacheManagementService, Air air, ILogger<AirDiffusionService> logger)
         {
             _air = air;
             _cacheManagementService = cacheManagementService;

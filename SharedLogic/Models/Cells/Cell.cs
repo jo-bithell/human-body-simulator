@@ -20,15 +20,27 @@ namespace SharedLogic.Models.Cells
             => Enzymes.Where(o => !o.InUse)?.FirstOrDefault(o => o.EnzymeType == enzymeType);
     }
 
-
-    public class NutrientConcentrations(int defaultConcentration)
+    public class NutrientConcentrations
     {
-        public int ATPCount { get; set; } = defaultConcentration;
-        public int OxygenCount { get; set; } = defaultConcentration;
-        public int GlucoseCount { get; set; } = defaultConcentration;
-        public int AminoAcidsCount { get; set; } = defaultConcentration;
-        public int FattyAcidsCount { get; set; } = defaultConcentration;
-        public int WaterCount { get; set; } = defaultConcentration;
-        public int CarbonDioxideCount { get; set; } = defaultConcentration;
+        public NutrientConcentrations() { }
+
+        public NutrientConcentrations(int defaultConcentration)
+        {
+            ATPCount = defaultConcentration;
+            OxygenCount = defaultConcentration;
+            GlucoseCount = defaultConcentration;
+            AminoAcidsCount = defaultConcentration;
+            FattyAcidsCount = defaultConcentration;
+            WaterCount = defaultConcentration;
+            CarbonDioxideCount = defaultConcentration;
+        }
+
+        public int ATPCount { get; set; }
+        public int OxygenCount { get; set; }
+        public int GlucoseCount { get; set; }
+        public int AminoAcidsCount { get; set; }
+        public int FattyAcidsCount { get; set; }
+        public int WaterCount { get; set; }
+        public int CarbonDioxideCount { get; set; }
     }
 }
